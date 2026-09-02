@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 농부 도우미 · 게임 설계서</title>
+<style>
+:root{
+  --soil:#5C4433;
+  --leaf:#0E6B5C;
+  --leaf-soft:#D6EFE6;
+  --sprout:#3FBF7F;
+  --sun:#FFC93C;
+  --sky:#F2FAF5;
+  --ink:#1E3A33;
+  --ink-soft:#5C7A72;
+  --line:#CFE5DA;
+  --white:#fff;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  background:var(--sky);
+  color:var(--ink);
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px 120px}
+
+/* ---------- 표지 ---------- */
+.cover{
+  background:var(--leaf);
+  border-radius:0 0 28px 28px;
+  padding:34px 32px 30px;
+  margin:0 -20px 26px;
+  color:#fff;
+  position:relative;
+  overflow:hidden;
+}
+.cover::after{
+  content:"";position:absolute;right:-40px;top:-40px;
+  width:200px;height:200px;border-radius:50%;
+  background:rgba(63,191,127,.35);
+}
+.cover-kicker{font-size:14px;font-weight:700;color:#9FE7C9;letter-spacing:.02em;margin:0 0 6px}
+.cover h1{font-size:34px;line-height:1.25;font-weight:800;margin:0 0 4px;position:relative;z-index:1}
+.cover p{margin:0 0 22px;color:#BDEBD8;font-size:15px;position:relative;z-index:1}
+.tag{
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.28);
+  border-radius:16px;padding:16px 18px;
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;
+  position:relative;z-index:1;
+}
+.tag label{display:block;font-size:13px;font-weight:700;color:#BDEBD8;margin-bottom:6px}
+.tag input{
+  width:100%;border:none;border-radius:9px;padding:11px 12px;
+  font-family:inherit;font-size:16px;font-weight:600;color:var(--ink);background:#fff;
+}
+.tag input:focus{outline:3px solid var(--sun);outline-offset:1px}
+
+/* ---------- 진행 게이지 ---------- */
+.gauge{
+  position:sticky;top:0;z-index:30;
+  background:rgba(242,250,245,.94);
+  backdrop-filter:blur(6px);
+  padding:12px 0 10px;margin:0 0 22px;
+  border-bottom:1px solid var(--line);
+}
+.gauge-row{display:flex;align-items:center;gap:12px}
+.gauge-track{flex:1;height:12px;background:#DCEDE4;border-radius:99px;overflow:hidden}
+.gauge-fill{height:100%;width:0%;background:var(--sprout);border-radius:99px;transition:width .35s ease}
+.gauge-txt{font-size:14px;font-weight:700;color:var(--leaf);white-space:nowrap}
+
+/* ---------- 스텝 ---------- */
+.step{
+  background:var(--white);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:26px 26px 24px;
+  margin-bottom:18px;
+}
+.step-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:6px}
+.step-no{
+  flex:none;width:38px;height:38px;border-radius:12px;
+  background:var(--leaf-soft);color:var(--leaf);
+  font-weight:800;font-size:17px;
+  display:flex;align-items:center;justify-content:center;
+}
+.step h2{margin:4px 0 0;font-size:21px;font-weight:800;line-height:1.35}
+.step-sub{margin:2px 0 22px 52px;color:var(--ink-soft);font-size:14.5px}
+
+.field{margin-bottom:22px}
+.field:last-child{margin-bottom:0}
+.field > label{display:block;font-size:15.5px;font-weight:700;margin-bottom:4px}
+.hint{font-size:13.5px;color:var(--ink-soft);margin:0 0 10px}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.chip{
+  font-family:inherit;font-size:14px;font-weight:600;
+  background:#F4FAF7;border:1.5px solid var(--line);color:var(--ink);
+  border-radius:99px;padding:8px 14px;cursor:pointer;
+  transition:background .15s,border-color .15s;
+}
+.chip:hover{background:var(--leaf-soft);border-color:var(--sprout)}
+.chip:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.chip.on{background:var(--leaf);border-color:var(--leaf);color:#fff}
+
+input[type=text],textarea{
+  width:100%;font-family:inherit;font-size:15.5px;color:var(--ink);
+  border:1.5px solid var(--line);border-radius:11px;
+  padding:11px 13px;background:#fff;line-height:1.55;
+}
+textarea{resize:vertical;min-height:74px}
+input[type=text]:focus,textarea:focus{outline:none;border-color:var(--sprout);box-shadow:0 0 0 3px rgba(63,191,127,.2)}
+::placeholder{color:#A6BFB6}
+
+/* 기능 선택 */
+.picked{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0;min-height:8px}
+.picked-item{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--sun);border-radius:99px;padding:7px 8px 7px 14px;
+  font-size:14px;font-weight:700;color:#4A3A00;
+}
+.picked-item button{
+  border:none;background:rgba(0,0,0,.14);color:#4A3A00;
+  width:20px;height:20px;border-radius:50%;cursor:pointer;
+  font-size:13px;line-height:1;font-family:inherit;
+}
+.addrow{display:flex;gap:8px;margin-top:10px}
+.addrow input{flex:1}
+.btn-sm{
+  font-family:inherit;font-size:14px;font-weight:700;
+  border:1.5px solid var(--leaf);background:#fff;color:var(--leaf);
+  border-radius:10px;padding:0 16px;cursor:pointer;white-space:nowrap;
+}
+.btn-sm:hover{background:var(--leaf-soft)}
+
+/* IPO */
+.ipo-empty{
+  background:#F4FAF7;border:1.5px dashed var(--line);border-radius:12px;
+  padding:22px;text-align:center;color:var(--ink-soft);font-size:14.5px;
+}
+.ipo-card{border:1.5px solid var(--line);border-radius:14px;padding:16px 16px 14px;margin-bottom:12px;background:#FCFEFD}
+.ipo-title{font-size:15px;font-weight:800;color:var(--leaf);margin:0 0 12px}
+.ipo-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.ipo-cell label{display:block;font-size:12.5px;font-weight:700;color:var(--ink-soft);margin-bottom:5px}
+.ipo-cell input{font-size:14.5px;padding:9px 11px}
+
+/* 프롬프트 */
+.prompt-box{
+  background:#12312B;border-radius:14px;padding:18px;
+  color:#DFF4EA;font-size:14px;line-height:1.75;
+  white-space:pre-wrap;word-break:break-word;
+  max-height:340px;overflow:auto;
+}
+.prompt-box em{color:#FFC93C;font-style:normal;font-weight:700}
+.copy-row{display:flex;gap:10px;align-items:center;margin-top:12px}
+.btn-copy{
+  font-family:inherit;font-size:14.5px;font-weight:700;
+  background:var(--leaf);color:#fff;border:none;border-radius:11px;
+  padding:11px 20px;cursor:pointer;
+}
+.btn-copy:hover{background:#0B5C4F}
+.copy-msg{font-size:14px;font-weight:700;color:var(--sprout)}
+
+/* 하단 액션 */
+.actions{
+  position:fixed;left:0;right:0;bottom:0;z-index:40;
+  background:#fff;border-top:1px solid var(--line);
+  padding:14px 20px;
+}
+.actions-in{
+  max-width:880px;margin:0 auto;
+  display:flex;align-items:center;gap:12px;
+}
+.save-state{font-size:13.5px;color:var(--ink-soft);flex:1}
+.btn-ghost{
+  font-family:inherit;font-size:14.5px;font-weight:700;
+  background:#fff;border:1.5px solid var(--line);color:var(--ink-soft);
+  border-radius:12px;padding:12px 16px;cursor:pointer;
+}
+.btn-pdf{
+  font-family:inherit;font-size:16px;font-weight:800;
+  background:var(--sun);color:#4A3A00;border:none;
+  border-radius:12px;padding:13px 26px;cursor:pointer;
+}
+.btn-pdf:hover{background:#F5BC1F}
+.btn-pdf:disabled{background:#E4E9E7;color:#9BAFA8;cursor:default}
+
+@media (max-width:700px){
+  .tag{grid-template-columns:1fr}
+  .ipo-grid{grid-template-columns:1fr}
+  .cover h1{font-size:27px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ---------- 인쇄(PDF) 전용 ---------- */
+#printDoc{display:none}
+@page{size:A4 portrait;margin:11mm}
+@media print{
+  html,body{background:#fff;font-size:12pt}
+  .wrap,.actions,.gauge,.printHelp{display:none !important}
+  #printDoc{
+    display:block;width:auto;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;
+  }
+}
+
+/* ---------- 인쇄 안내 ---------- */
+.printHelp{
+  position:fixed;inset:0;z-index:60;
+  background:rgba(18,49,43,.6);
+  display:none;align-items:center;justify-content:center;padding:20px;
+}
+.printHelp.on{display:flex}
+.printHelp-card{
+  background:#fff;border-radius:18px;padding:28px 28px 22px;max-width:430px;
+}
+.printHelp-card h3{margin:0 0 12px;font-size:20px;font-weight:800}
+.printHelp-card ol{margin:0 0 18px;padding-left:20px;font-size:15.5px;line-height:1.85}
+.printHelp-card ol b{background:#FFF2C9;padding:1px 5px;border-radius:4px}
+.printHelp-row{display:flex;gap:10px;justify-content:flex-end}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="cover">
+    <p class="cover-kicker">애그테크 · 스마트농업 체험 게임</p>
+    <h1>AI 농부 도우미<br>게임 설계서</h1>
+    <p>만들기 전에 먼저 그려봅니다. 다 채우면 PDF로 저장할 수 있어요.</p>
+    <div class="tag">
+      <div>
+        <label for="fDate">오늘 날짜</label>
+        <input type="date" id="fDate">
+      </div>
+      <div>
+        <label for="fName">이름</label>
+        <input type="text" id="fName" placeholder="예: 김하늘" autocomplete="off">
+      </div>
+      <div>
+        <label for="fClass">학교 · 반 (선택)</label>
+        <input type="text" id="fClass" placeholder="예: 초록초 6-2" autocomplete="off">
+      </div>
+    </div>
+  </header>
+
+  <div class="gauge">
+    <div class="gauge-row">
+      <span class="gauge-txt" id="gaugeIcon">🌱</span>
+      <div class="gauge-track"><div class="gauge-fill" id="gaugeFill"></div></div>
+      <span class="gauge-txt" id="gaugeTxt">0 / 12 칸</span>
+    </div>
+  </div>
+
+  <!-- STEP 1 -->
+  <section class="step">
+    <div class="step-head">
+      <div class="step-no">1</div>
+      <h2>내가 해결하고 싶은 농사 문제</h2>
+    </div>
+    <p class="step-sub">게임으로 만들 문제를 하나만 고릅니다. 문제가 뾰족할수록 게임이 재미있어져요.</p>
+
+    <div class="field">
+      <label>어떤 문제를 다룰까요?</label>
+      <p class="hint">버튼을 누르면 아래 칸에 문장이 들어갑니다. 내 말로 고쳐 써도 좋아요.</p>
+      <div class="chips" data-fill="p1problem">
+        <button type="button" class="chip">물 주는 때를 자꾸 놓쳐요</button>
+        <button type="button" class="chip">햇빛이 부족한지 알기 어려워요</button>
+        <button type="button" class="chip">날씨가 갑자기 더워지거나 추워져요</button>
+        <button type="button" class="chip">벌레와 병이 생기는 걸 늦게 알아요</button>
+        <button type="button" class="chip">언제 거둬야 할지 모르겠어요</button>
+        <button type="button" class="chip">작물이 많아서 혼자 다 못 살펴요</button>
+      </div>
+      <input type="text" id="p1problem" data-req placeholder="한 문장으로 써 보세요">
+    </div>
+
+    <div class="field">
+      <label>이 문제를 그냥 두면 어떤 일이 생기나요?</label>
+      <input type="text" id="p1why" data-req placeholder="예: 물을 못 줘서 잎이 시들고 결국 말라 죽어요">
+    </div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="step">
+    <div class="step-head">
+      <div class="step-no">2</div>
+      <h2>게임 기획서</h2>
+    </div>
+    <p class="step-sub">어떤 게임인지 한눈에 알 수 있게 정리합니다.</p>
+
+    <div class="field">
+      <label>게임 이름</label>
+      <div class="chips" data-fill="p2name">
+        <button type="button" class="chip">새싹 지킴이</button>
+        <button type="button" class="chip">텃밭 대장</button>
+        <button type="button" class="chip">쑥쑥 농장</button>
+        <button type="button" class="chip">AI 농부 수첩</button>
+        <button type="button" class="chip">물주기 마스터</button>
+      </div>
+      <input type="text" id="p2name" data-req placeholder="친구가 듣고 기억할 만한 이름으로">
+    </div>
+
+    <div class="field">
+      <label>키우는 작물</label>
+      <div class="chips" data-fill="p2crop">
+        <button type="button" class="chip">🍓 딸기</button>
+        <button type="button" class="chip">🍅 방울토마토</button>
+        <button type="button" class="chip">🥬 상추</button>
+        <button type="button" class="chip">🌽 옥수수</button>
+        <button type="button" class="chip">🥔 감자</button>
+        <button type="button" class="chip">🌻 해바라기</button>
+      </div>
+      <input type="text" id="p2crop" data-req placeholder="키우고 싶은 작물">
+    </div>
+
+    <div class="field">
+      <label>게임을 하는 사람은 누구인가요?</label>
+      <div class="chips" data-fill="p2user">
+        <button type="button" class="chip">처음 농사를 짓는 초보 농부</button>
+        <button type="button" class="chip">학교 텃밭을 돌보는 학생</button>
+        <button type="button" class="chip">미래 스마트농장 관리자</button>
+        <button type="button" class="chip">우주 농장을 맡은 대원</button>
+      </div>
+      <input type="text" id="p2user" data-req placeholder="플레이어의 역할">
+    </div>
+
+    <div class="field">
+      <label>어떻게 하면 이기나요?</label>
+      <p class="hint">이기는 조건이 있어야 게임이 됩니다.</p>
+      <div class="chips" data-fill="p2goal">
+        <button type="button" class="chip">작물을 끝까지 키워서 수확하면 이겨요</button>
+        <button type="button" class="chip">건강 점수를 100점까지 채우면 이겨요</button>
+        <button type="button" class="chip">30일 동안 작물을 살려내면 이겨요</button>
+        <button type="button" class="chip">별 3개를 모두 모으면 이겨요</button>
+      </div>
+      <input type="text" id="p2goal" data-req placeholder="승리 조건">
+    </div>
+
+    <div class="field">
+      <label>핵심 기능 버튼 (2~3개까지)</label>
+      <p class="hint">욕심내면 시간 안에 못 만듭니다. 꼭 필요한 것만 고르세요.</p>
+      <div class="chips" id="featChips">
+        <button type="button" class="chip" data-f="물주기">💧 물주기</button>
+        <button type="button" class="chip" data-f="햇빛 쬐기">☀️ 햇빛 쬐기</button>
+        <button type="button" class="chip" data-f="비료 주기">🌿 비료 주기</button>
+        <button type="button" class="chip" data-f="벌레 잡기">🐛 벌레 잡기</button>
+        <button type="button" class="chip" data-f="온도 맞추기">🌡️ 온도 맞추기</button>
+        <button type="button" class="chip" data-f="상태 보기">📊 상태 보기</button>
+        <button type="button" class="chip" data-f="수확하기">🧺 수확하기</button>
+      </div>
+      <div class="addrow">
+        <input type="text" id="featCustom" placeholder="직접 만들기 (예: 새 쫓기)">
+        <button type="button" class="btn-sm" id="featAdd">추가</button>
+      </div>
+      <div class="picked" id="featPicked"></div>
+    </div>
+
+    <div class="field">
+      <label>화면 분위기</label>
+      <div class="chips" data-fill="p2mood">
+        <button type="button" class="chip">귀여운 파스텔 색</button>
+        <button type="button" class="chip">밝고 시원한 초록 농장</button>
+        <button type="button" class="chip">옛날 게임 같은 픽셀 느낌</button>
+        <button type="button" class="chip">미래 우주 농장 느낌</button>
+      </div>
+      <input type="text" id="p2mood" data-req placeholder="색깔, 캐릭터, 분위기">
+    </div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="step">
+    <div class="step-head">
+      <div class="step-no">3</div>
+      <h2>버튼이 하는 일 (입력 → 처리 → 출력)</h2>
+    </div>
+    <p class="step-sub">위에서 고른 버튼마다 칸이 생깁니다. 누르면 무엇이 바뀌고 무엇이 보이는지 적으세요.</p>
+    <div id="ipoZone">
+      <div class="ipo-empty">2단계에서 기능 버튼을 먼저 골라 주세요.</div>
+    </div>
+  </section>
+
+  <!-- STEP 4 -->
+  <section class="step">
+    <div class="step-head">
+      <div class="step-no">4</div>
+      <h2>AI에게 부탁할 말</h2>
+    </div>
+    <p class="step-sub">위에 쓴 내용이 자동으로 모입니다. 복사해서 AI에게 그대로 붙여넣으면 됩니다.</p>
+
+    <div class="field">
+      <label>더 부탁하고 싶은 것 (선택)</label>
+      <input type="text" id="p4extra" placeholder="예: 버튼 누를 때 소리가 나게 해줘">
+    </div>
+
+    <div class="prompt-box" id="promptBox"></div>
+    <div class="copy-row">
+      <button type="button" class="btn-copy" id="btnCopy">프롬프트 복사</button>
+      <span class="copy-msg" id="copyMsg"></span>
+    </div>
+  </section>
+
+  <!-- STEP 5 -->
+  <section class="step">
+    <div class="step-head">
+      <div class="step-no">5</div>
+      <h2>만들고 나서</h2>
+    </div>
+    <p class="step-sub">게임을 직접 해 본 뒤에 적습니다.</p>
+
+    <div class="field">
+      <label>가장 마음에 드는 점</label>
+      <textarea id="p5good" data-req placeholder="내 게임에서 제일 잘 된 부분"></textarea>
+    </div>
+    <div class="field">
+      <label>더 고치고 싶은 점</label>
+      <textarea id="p5fix" data-req placeholder="시간이 더 있다면 무엇을 바꿀까요"></textarea>
+    </div>
+    <div class="field">
+      <label>오늘 새롭게 알게 된 것</label>
+      <textarea id="p5learn" data-req placeholder="애그테크, 기획, IPO, 바이브코딩 중에서"></textarea>
+    </div>
+  </section>
+
+</div>
+
+<div class="actions">
+  <div class="actions-in">
+    <span class="save-state" id="saveState">자동으로 임시 저장됩니다</span>
+    <button type="button" class="btn-ghost" id="btnReset">전체 지우기</button>
+    <button type="button" class="btn-pdf" id="btnPdf">PDF로 저장</button>
+  </div>
+</div>
+
+<div class="printHelp" id="printHelp">
+  <div class="printHelp-card">
+    <h3>PDF로 저장하는 방법</h3>
+    <ol>
+      <li>잠시 뒤 인쇄 창이 열립니다.</li>
+      <li>대상(프린터) 칸을 <b>PDF로 저장</b>으로 바꿉니다.</li>
+      <li><b>저장</b> 버튼을 누릅니다.</li>
+    </ol>
+    <div class="printHelp-row">
+      <button type="button" class="btn-ghost" id="helpCancel">그만두기</button>
+      <button type="button" class="btn-pdf" id="helpGo">인쇄 창 열기</button>
+    </div>
+  </div>
+</div>
+
+<div id="printDoc" aria-hidden="true"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var FIELDS = ['fDate','fName','fClass','p1problem','p1why','p2name','p2crop','p2user','p2goal','p2mood','p4extra','p5good','p5fix','p5learn'];
+  var state = { features: [], ipo: {} };
+  var $ = function(id){ return document.getElementById(id); };
+  var esc = function(s){ return String(s==null?'':s).replace(/[&<>"]/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); };
+
+  /* ---------- 저장소 (있으면 쓰고, 없으면 이번 시간에만 유지) ---------- */
+  var mem = {};
+  var KEY = 'agtech-design-sheet';
+  function saveState(){
+    var data = { features: state.features, ipo: state.ipo };
+    FIELDS.forEach(function(id){ data[id] = $(id).value; });
+    var json = JSON.stringify(data);
+    mem[KEY] = json;
+    try {
+      if (window.storage && window.storage.set) {
+        window.storage.set(KEY, json).catch(function(){});
+      }
+    } catch(e){}
+    flash('임시 저장됨 · ' + new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}));
+  }
+  function loadState(){
+    var json = mem[KEY];
+    var apply = function(j){
+      if(!j) return;
+      var d;
+      try { d = JSON.parse(j); } catch(e){ return; }
+      FIELDS.forEach(function(id){ if(typeof d[id]==='string') $(id).value = d[id]; });
+      state.features = Array.isArray(d.features) ? d.features : [];
+      state.ipo = d.ipo && typeof d.ipo==='object' ? d.ipo : {};
+      renderFeatures(); renderIPO(); refresh();
+    };
+    apply(json);
+    try {
+      if (window.storage && window.storage.get) {
+        window.storage.get(KEY).then(function(r){ if(r && r.value) apply(r.value); }).catch(function(){});
+      }
+    } catch(e){}
+  }
+  var flashTimer;
+  function flash(msg){
+    $('saveState').textContent = msg;
+    clearTimeout(flashTimer);
+    flashTimer = setTimeout(function(){ $('saveState').textContent = '자동으로 임시 저장됩니다'; }, 2600);
+  }
+
+  /* ---------- 칩: 누르면 아래 칸을 채움 ---------- */
+  document.querySelectorAll('.chips[data-fill]').forEach(function(box){
+    var target = $(box.getAttribute('data-fill'));
+    box.querySelectorAll('.chip').forEach(function(chip){
+      chip.addEventListener('click', function(){
+        target.value = chip.textContent.replace(/^[^\p{L}\p{N}]+/u,'').trim();
+        target.focus();
+        box.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('on'); });
+        chip.classList.add('on');
+        onChange();
+      });
+    });
+    target.addEventListener('input', function(){
+      box.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('on'); });
+    });
+  });
+
+  /* ---------- 기능 선택 (최대 3개) ---------- */
+  function addFeature(name){
+    name = (name||'').trim();
+    if(!name) return;
+    if(state.features.indexOf(name) > -1) return;
+    if(state.features.length >= 3){ flash('기능은 3개까지만 고를 수 있어요'); return; }
+    state.features.push(name);
+    if(!state.ipo[name]) state.ipo[name] = { i:'「'+name+'」 버튼을 누른다', p:'', o:'' };
+    renderFeatures(); renderIPO(); onChange();
+  }
+  function removeFeature(name){
+    state.features = state.features.filter(function(f){ return f !== name; });
+    renderFeatures(); renderIPO(); onChange();
+  }
+  $('featChips').querySelectorAll('.chip').forEach(function(chip){
+    chip.addEventListener('click', function(){
+      var n = chip.getAttribute('data-f');
+      if(state.features.indexOf(n) > -1) removeFeature(n); else addFeature(n);
+    });
+  });
+  $('featAdd').addEventListener('click', function(){
+    addFeature($('featCustom').value); $('featCustom').value = '';
+  });
+  $('featCustom').addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){ e.preventDefault(); $('featAdd').click(); }
+  });
+
+  function renderFeatures(){
+    var box = $('featPicked');
+    box.innerHTML = '';
+    state.features.forEach(function(f){
+      var el = document.createElement('span');
+      el.className = 'picked-item';
+      el.innerHTML = esc(f) + ' <button type="button" aria-label="'+esc(f)+' 빼기">✕</button>';
+      el.querySelector('button').addEventListener('click', function(){ removeFeature(f); });
+      box.appendChild(el);
+    });
+    $('featChips').querySelectorAll('.chip').forEach(function(c){
+      c.classList.toggle('on', state.features.indexOf(c.getAttribute('data-f')) > -1);
+    });
+  }
+
+  /* ---------- IPO ---------- */
+  var IPO_HINT = {
+    '물주기':      ['수분 점수를 10 올린다', '"물이 충분해졌어요!"'],
+    '햇빛 쬐기':   ['햇빛 점수를 10 올린다', '"햇빛을 잘 먹었어요!"'],
+    '비료 주기':   ['영양 점수를 15 올린다', '작물이 한 단계 자란다'],
+    '벌레 잡기':   ['벌레 수를 1 줄인다', '"벌레를 잡았어요!"'],
+    '온도 맞추기': ['온도를 알맞게 바꾼다', '온도계 색이 초록으로 바뀐다'],
+    '상태 보기':   ['모든 점수를 더한다', '건강 점수와 표정을 보여준다'],
+    '수확하기':    ['자란 정도를 확인한다', '"수확 성공!" 축하 화면']
+  };
+  function renderIPO(){
+    var zone = $('ipoZone');
+    zone.innerHTML = '';
+    if(state.features.length === 0){
+      zone.innerHTML = '<div class="ipo-empty">2단계에서 기능 버튼을 먼저 골라 주세요.</div>';
+      return;
+    }
+    state.features.forEach(function(f, idx){
+      var d = state.ipo[f] || (state.ipo[f] = { i:'「'+f+'」 버튼을 누른다', p:'', o:'' });
+      var h = IPO_HINT[f] || ['무엇이 바뀌나요?', '화면에 무엇이 보이나요?'];
+      var card = document.createElement('div');
+      card.className = 'ipo-card';
+      card.innerHTML =
+        '<p class="ipo-title">기능 ' + (idx+1) + ' · ' + esc(f) + '</p>' +
+        '<div class="ipo-grid">' +
+          '<div class="ipo-cell"><label>입력 — 무엇을 하나요</label><input type="text" data-k="i"></div>' +
+          '<div class="ipo-cell"><label>처리 — 무엇이 바뀌나요</label><input type="text" data-k="p" placeholder="'+esc(h[0])+'"></div>' +
+          '<div class="ipo-cell"><label>출력 — 무엇이 보이나요</label><input type="text" data-k="o" placeholder="'+esc(h[1])+'"></div>' +
+        '</div>';
+      card.querySelectorAll('input').forEach(function(inp){
+        var k = inp.getAttribute('data-k');
+        inp.value = d[k] || '';
+        inp.addEventListener('input', function(){ d[k] = inp.value; onChange(); });
+      });
+      zone.appendChild(card);
+    });
+  }
+
+  /* ---------- 프롬프트 ---------- */
+  function v(id, fallback){ var t = $(id).value.trim(); return t || (fallback||''); }
+  function buildPrompt(){
+    var lines = [];
+    lines.push('초등학생이 즐길 수 있는 애그테크 스마트농업 체험 게임을 웹앱으로 만들어줘.');
+    lines.push('');
+    lines.push('게임 이름: ' + v('p2name','(아직 정하지 않음)'));
+    lines.push('키우는 작물: ' + v('p2crop','(아직 정하지 않음)'));
+    lines.push('게임을 하는 사람: ' + v('p2user','(아직 정하지 않음)'));
+    lines.push('해결하려는 문제: ' + v('p1problem','(아직 정하지 않음)'));
+    lines.push('이기는 방법: ' + v('p2goal','(아직 정하지 않음)'));
+    lines.push('');
+    if(state.features.length){
+      lines.push('버튼은 이렇게 만들어줘:');
+      state.features.forEach(function(f, i){
+        var d = state.ipo[f] || {};
+        var p = (d.p||'').trim(), o = (d.o||'').trim();
+        var s = (i+1) + '. 「' + f + '」 버튼';
+        if(p) s += ' — 누르면 ' + p;
+        if(o) s += ', 화면에는 ' + o;
+        lines.push(s);
+      });
+    } else {
+      lines.push('버튼: (아직 정하지 않음)');
+    }
+    lines.push('');
+    lines.push('화면 분위기: ' + v('p2mood','초등학생이 좋아할 밝고 귀여운 느낌'));
+    var extra = $('p4extra').value.trim();
+    if(extra) lines.push('추가 부탁: ' + extra);
+    lines.push('');
+    lines.push('글씨와 버튼은 크게, 한 화면 안에서 모두 움직이게 만들어줘. 한국어로 만들어줘.');
+    return lines.join('\n');
+  }
+  $('btnCopy').addEventListener('click', function(){
+    var t = buildPrompt();
+    var done = function(){
+      $('copyMsg').textContent = '복사했어요';
+      setTimeout(function(){ $('copyMsg').textContent = ''; }, 2200);
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(t).then(done, fallbackCopy);
+    } else fallbackCopy();
+    function fallbackCopy(){
+      var ta = document.createElement('textarea');
+      ta.value = t; ta.style.position='fixed'; ta.style.left='-9999px';
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); done(); }catch(e){ $('copyMsg').textContent='직접 드래그해서 복사해 주세요'; }
+      document.body.removeChild(ta);
+    }
+  });
+
+  /* ---------- 진행 게이지 ---------- */
+  function progress(){
+    var reqs = ['fName','p1problem','p1why','p2name','p2crop','p2user','p2goal','p2mood','p5good','p5fix','p5learn'];
+    var done = 0;
+    reqs.forEach(function(id){ if($(id).value.trim()) done++; });
+    var total = reqs.length + 1;
+    if(state.features.length >= 2) done++;
+    return { done: done, total: total };
+  }
+  function refresh(){
+    var pr = progress();
+    var pct = Math.round(pr.done / pr.total * 100);
+    $('gaugeFill').style.width = pct + '%';
+    $('gaugeTxt').textContent = pr.done + ' / ' + pr.total + ' 칸';
+    $('gaugeIcon').textContent = pct >= 100 ? '🌻' : pct >= 60 ? '🌿' : '🌱';
+    $('promptBox').textContent = buildPrompt();
+  }
+
+  var saveTimer;
+  function onChange(){
+    refresh();
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(saveState, 700);
+  }
+  FIELDS.forEach(function(id){ $(id).addEventListener('input', onChange); });
+
+  /* ---------- PDF ---------- */
+  function row(label, value){
+    return '<tr><th>' + esc(label) + '</th><td>' + (value ? esc(value) : '<span class="blank">—</span>') + '</td></tr>';
+  }
+  function buildPrintDoc(){
+    var ipoRows = state.features.length
+      ? state.features.map(function(f, i){
+          var d = state.ipo[f] || {};
+          return '<tr><td class="n">' + (i+1) + '</td><td>' + esc(d.i || ('「'+f+'」 버튼을 누른다')) +
+                 '</td><td>' + (d.p ? esc(d.p) : '<span class="blank">—</span>') +
+                 '</td><td>' + (d.o ? esc(d.o) : '<span class="blank">—</span>') + '</td></tr>';
+        }).join('')
+      : '<tr><td class="n">—</td><td colspan="3"><span class="blank">기능을 정하지 않았습니다</span></td></tr>';
+
+    return '' +
+    '<div style="font-family:\'Pretendard Variable\',Pretendard,-apple-system,\'Malgun Gothic\',sans-serif;color:#1E3A33;background:#fff;">' +
+      '<style>' +
+        '#printDoc h2{font-size:13pt;font-weight:800;color:#0E6B5C;margin:18px 0 8px;padding-bottom:5px;border-bottom:2px solid #0E6B5C;break-after:avoid;page-break-after:avoid;}' +
+        '#printDoc table{width:100%;border-collapse:collapse;font-size:10.5pt;break-inside:avoid;page-break-inside:avoid;}' +
+        '#printDoc th,#printDoc td{border:1px solid #9CC7B7;padding:7px 9px;text-align:left;vertical-align:top;line-height:1.5;}' +
+        '#printDoc th{background:#EDF8F3;font-weight:700;width:120px;color:#0E6B5C;}' +
+        '#printDoc .ipo th{background:#DCEFE7;color:#0E6B5C;width:auto;text-align:center;}' +
+        '#printDoc .ipo td.n{width:28px;text-align:center;font-weight:700;color:#0E6B5C;}' +
+        '#printDoc .blank{color:#9CAFA9;}' +
+        '#printDoc .pr{background:#F4FAF7;border:1px solid #9CC7B7;color:#1E3A33;border-radius:8px;padding:12px 14px;font-size:9.5pt;line-height:1.7;white-space:pre-wrap;word-break:break-word;break-inside:avoid;page-break-inside:avoid;}' +
+        '#printDoc .memo{border:1px solid #9CC7B7;border-radius:7px;padding:8px 11px;font-size:10.5pt;min-height:40px;line-height:1.6;margin-bottom:8px;break-inside:avoid;page-break-inside:avoid;}' +
+        '#printDoc .memo b{display:block;font-size:9pt;color:#5C7A72;margin-bottom:3px;font-weight:700;}' +
+      '</style>' +
+      '<div style="background:#EDF8F3;border:2px solid #0E6B5C;border-left-width:9px;border-radius:10px;padding:14px 18px;">' +
+        '<div style="font-size:9.5pt;font-weight:700;color:#3D8C7A;">애그테크 · 스마트농업 체험 게임</div>' +
+        '<div style="font-size:20pt;font-weight:800;margin:2px 0 9px;color:#0E6B5C;">AI 농부 도우미 게임 설계서</div>' +
+        '<div style="font-size:11pt;font-weight:600;color:#1E3A33;">' +
+          '이름 ' + esc($('fName').value || '—') +
+          ' &nbsp;·&nbsp; ' + esc($('fClass').value || '학교·반 미기재') +
+          ' &nbsp;·&nbsp; ' + esc($('fDate').value || '—') +
+        '</div>' +
+      '</div>' +
+
+      '<h2>1. 해결하고 싶은 농사 문제</h2>' +
+      '<table>' + row('문제', $('p1problem').value) + row('그냥 두면', $('p1why').value) + '</table>' +
+
+      '<h2>2. 게임 기획서</h2>' +
+      '<table>' +
+        row('게임 이름', $('p2name').value) +
+        row('키우는 작물', $('p2crop').value) +
+        row('플레이어', $('p2user').value) +
+        row('이기는 방법', $('p2goal').value) +
+        row('핵심 기능', state.features.join('  /  ')) +
+        row('화면 분위기', $('p2mood').value) +
+      '</table>' +
+
+      '<h2>3. 버튼이 하는 일 (입력 → 처리 → 출력)</h2>' +
+      '<table class="ipo"><tr><th>#</th><th>입력</th><th>처리</th><th>출력</th></tr>' + ipoRows + '</table>' +
+
+      '<h2>4. AI에게 부탁한 말</h2>' +
+      '<div class="pr">' + esc(buildPrompt()) + '</div>' +
+
+      '<h2>5. 만들고 나서</h2>' +
+      '<div class="memo"><b>가장 마음에 드는 점</b>' + (esc($('p5good').value) || '&nbsp;') + '</div>' +
+      '<div class="memo"><b>더 고치고 싶은 점</b>' + (esc($('p5fix').value) || '&nbsp;') + '</div>' +
+      '<div class="memo"><b>오늘 새롭게 알게 된 것</b>' + (esc($('p5learn').value) || '&nbsp;') + '</div>' +
+    '</div>';
+  }
+
+  function safe(s){ return String(s).replace(/[\\\/:*?"<>|\s]+/g, '_').replace(/_+/g,'_').replace(/^_|_$/g,''); }
+
+  var savedTitle = document.title;
+
+  $('btnPdf').addEventListener('click', function(){
+    var name = $('fName').value.trim();
+    var date = $('fDate').value.trim();
+    if(!date){ alert('오늘 날짜를 먼저 넣어 주세요.'); $('fDate').focus(); return; }
+    if(!name){ alert('이름을 먼저 넣어 주세요. 파일 이름에 들어갑니다.'); $('fName').focus(); return; }
+    saveState();
+    $('printHelp').classList.add('on');
+    $('helpGo').focus();
+  });
+
+  $('helpCancel').addEventListener('click', function(){
+    $('printHelp').classList.remove('on');
+  });
+
+  $('helpGo').addEventListener('click', function(){
+    var name = $('fName').value.trim();
+    var date = $('fDate').value.trim();
+
+    $('printDoc').innerHTML = buildPrintDoc();
+    // 크롬·엣지는 문서 제목을 PDF 파일 이름으로 씁니다
+    document.title = safe(date) + '_' + safe(name);
+    $('printHelp').classList.remove('on');
+
+    setTimeout(function(){
+      window.print();
+      setTimeout(function(){
+        document.title = savedTitle;
+        $('printDoc').innerHTML = '';
+        flash('PDF 저장 창을 열었어요');
+      }, 800);
+    }, 60);
+  });
+
+  window.addEventListener('afterprint', function(){
+    document.title = savedTitle;
+  });
+
+  /* ---------- 초기화 ---------- */
+  $('btnReset').addEventListener('click', function(){
+    if(!confirm('쓴 내용을 모두 지웁니다. 계속할까요?')) return;
+    FIELDS.forEach(function(id){ if(id !== 'fDate') $(id).value = ''; });
+    state.features = []; state.ipo = {};
+    document.querySelectorAll('.chip.on').forEach(function(c){ c.classList.remove('on'); });
+    renderFeatures(); renderIPO(); onChange();
+  });
+
+  /* ---------- 시작 ---------- */
+  (function initDate(){
+    var d = new Date();
+    var p = function(n){ return (n<10?'0':'') + n; };
+    $('fDate').value = d.getFullYear() + '-' + p(d.getMonth()+1) + '-' + p(d.getDate());
+  })();
+  renderFeatures(); renderIPO(); refresh(); loadState();
+})();
+</script>
+</body>
+</html>
