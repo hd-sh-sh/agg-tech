@@ -97,6 +97,16 @@ body{
 .field > label{display:block;font-size:15.5px;font-weight:700;margin-bottom:4px}
 .hint{font-size:13.5px;color:var(--ink-soft);margin:0 0 10px}
 
+.subgroup{
+  background:#F4FAF7;border:1.5px solid var(--line);
+  border-radius:14px;padding:20px 18px 18px;margin-bottom:22px;
+}
+.subhead{
+  margin:0 0 2px;font-size:16px;font-weight:800;color:var(--leaf);
+  display:flex;align-items:center;gap:8px;
+}
+.subhead::before{content:"⏱";font-size:17px}
+
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
 .chip{
   font-family:inherit;font-size:14px;font-weight:600;
@@ -148,13 +158,21 @@ input[type=text]:focus,textarea:focus{outline:none;border-color:var(--sprout);bo
 .ipo-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 .ipo-cell label{display:block;font-size:12.5px;font-weight:700;color:var(--ink-soft);margin-bottom:5px}
 .ipo-cell input{font-size:14.5px;padding:9px 11px}
+.exchips{display:grid;gap:5px;margin-top:6px}
+.exchip{
+  font-family:inherit;font-size:12.5px;font-weight:600;line-height:1.45;
+  background:#fff;border:1.5px solid var(--line);color:var(--ink-soft);
+  border-radius:8px;padding:6px 10px;cursor:pointer;text-align:left;width:100%;
+}
+.exchip:hover{background:var(--leaf-soft);border-color:var(--sprout);color:var(--ink)}
+.exchip:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
 
 /* 프롬프트 */
 .prompt-box{
   background:#12312B;border-radius:14px;padding:18px;
   color:#DFF4EA;font-size:14px;line-height:1.75;
   white-space:pre-wrap;word-break:break-word;
-  max-height:340px;overflow:auto;
+  max-height:440px;overflow:auto;
 }
 .prompt-box em{color:#FFC93C;font-style:normal;font-weight:700}
 .copy-row{display:flex;gap:10px;align-items:center;margin-top:12px}
@@ -330,18 +348,6 @@ input[type=text]:focus,textarea:focus{outline:none;border-color:var(--sprout);bo
     </div>
 
     <div class="field">
-      <label>어떻게 하면 이기나요?</label>
-      <p class="hint">이기는 조건이 있어야 게임이 됩니다.</p>
-      <div class="chips" data-fill="p2goal">
-        <button type="button" class="chip">작물을 끝까지 키워서 수확하면 이겨요</button>
-        <button type="button" class="chip">건강 점수를 100점까지 채우면 이겨요</button>
-        <button type="button" class="chip">30일 동안 작물을 살려내면 이겨요</button>
-        <button type="button" class="chip">별 3개를 모두 모으면 이겨요</button>
-      </div>
-      <input type="text" id="p2goal" data-req placeholder="승리 조건">
-    </div>
-
-    <div class="field">
       <label>핵심 기능 버튼 (2~3개까지)</label>
       <p class="hint">욕심내면 시간 안에 못 만듭니다. 꼭 필요한 것만 고르세요.</p>
       <div class="chips" id="featChips">
@@ -358,6 +364,55 @@ input[type=text]:focus,textarea:focus{outline:none;border-color:var(--sprout);bo
         <button type="button" class="btn-sm" id="featAdd">추가</button>
       </div>
       <div class="picked" id="featPicked"></div>
+    </div>
+
+    <div class="subgroup">
+      <p class="subhead">게임이 끝나는 때</p>
+      <p class="hint" style="margin-bottom:18px">끝나는 조건이 없으면 게임이 영원히 이어집니다. 네 가지를 모두 정하세요.</p>
+
+      <div class="field">
+        <label>한 판은 얼마 동안 하나요?</label>
+        <div class="chips" data-fill="p2len">
+          <button type="button" class="chip">10일 동안</button>
+          <button type="button" class="chip">20일 동안</button>
+          <button type="button" class="chip">30일 동안</button>
+          <button type="button" class="chip">3분 동안</button>
+        </div>
+        <input type="text" id="p2len" data-req placeholder="예: 10일 동안">
+      </div>
+
+      <div class="field">
+        <label>하루에 몇 번 움직일 수 있나요?</label>
+        <p class="hint">횟수를 정해야 학생이 아무 버튼이나 계속 누르지 않습니다.</p>
+        <div class="chips" data-fill="p2turn">
+          <button type="button" class="chip">하루에 2번</button>
+          <button type="button" class="chip">하루에 3번</button>
+          <button type="button" class="chip">하루에 5번</button>
+        </div>
+        <input type="text" id="p2turn" data-req placeholder="예: 하루에 3번">
+      </div>
+
+      <div class="field">
+        <label>이렇게 하면 이겨요</label>
+        <div class="chips" data-fill="p2win">
+          <button type="button" class="chip">마지막 날까지 작물이 살아 있으면 이겨요</button>
+          <button type="button" class="chip">성장 점수가 100점이 되면 이겨요</button>
+          <button type="button" class="chip">작물을 수확하면 이겨요</button>
+          <button type="button" class="chip">열매를 5개 모으면 이겨요</button>
+        </div>
+        <input type="text" id="p2win" data-req placeholder="이기는 조건">
+      </div>
+
+      <div class="field">
+        <label>이렇게 되면 져요</label>
+        <div class="chips" data-fill="p2lose">
+          <button type="button" class="chip">수분이 0이 되면 작물이 말라 죽어요</button>
+          <button type="button" class="chip">건강 점수가 0이 되면 져요</button>
+          <button type="button" class="chip">마지막 날까지 다 못 키우면 져요</button>
+          <button type="button" class="chip">벌레가 5마리가 되면 져요</button>
+        </div>
+        <input type="text" id="p2lose" data-req placeholder="지는 조건">
+      </div>
     </div>
 
     <div class="field">
@@ -378,7 +433,7 @@ input[type=text]:focus,textarea:focus{outline:none;border-color:var(--sprout);bo
       <div class="step-no">3</div>
       <h2>버튼이 하는 일 (입력 → 처리 → 출력)</h2>
     </div>
-    <p class="step-sub">위에서 고른 버튼마다 칸이 생깁니다. 누르면 무엇이 바뀌고 무엇이 보이는지 적으세요.</p>
+    <p class="step-sub">위에서 고른 버튼마다 칸이 생깁니다. 아래 예시를 눌러 채운 뒤, 내 게임에 맞게 고쳐 쓰세요.</p>
     <div id="ipoZone">
       <div class="ipo-empty">2단계에서 기능 버튼을 먼저 골라 주세요.</div>
     </div>
@@ -444,8 +499,13 @@ input[type=text]:focus,textarea:focus{outline:none;border-color:var(--sprout);bo
       <li>대상(프린터) 칸을 <b>PDF로 저장</b>으로 바꿉니다.</li>
       <li><b>저장</b> 버튼을 누릅니다.</li>
     </ol>
+    <p id="frameWarn" style="display:none;margin:-8px 0 16px;padding:12px 14px;background:#FFF6DC;border:1.5px solid #F0C94B;border-radius:11px;font-size:14px;line-height:1.6;color:#6B5200;">
+      지금은 미리보기 창이라 인쇄가 막혀 있을 수 있어요.<br>
+      저장이 안 되면 아래 <b>설계서 텍스트 복사</b>를 눌러 붙여넣어 두세요.
+    </p>
     <div class="printHelp-row">
       <button type="button" class="btn-ghost" id="helpCancel">그만두기</button>
+      <button type="button" class="btn-ghost" id="helpText" style="display:none">설계서 텍스트 복사</button>
       <button type="button" class="btn-pdf" id="helpGo">인쇄 창 열기</button>
     </div>
   </div>
@@ -457,7 +517,7 @@ input[type=text]:focus,textarea:focus{outline:none;border-color:var(--sprout);bo
 (function(){
   "use strict";
 
-  var FIELDS = ['fDate','fName','fClass','p1problem','p1why','p2name','p2crop','p2user','p2goal','p2mood','p4extra','p5good','p5fix','p5learn'];
+  var FIELDS = ['fDate','fName','fClass','p1problem','p1why','p2name','p2crop','p2user','p2len','p2turn','p2win','p2lose','p2mood','p4extra','p5good','p5fix','p5learn'];
   var state = { features: [], ipo: {} };
   var $ = function(id){ return document.getElementById(id); };
   var esc = function(s){ return String(s==null?'':s).replace(/[&<>"]/g, function(c){
@@ -563,15 +623,57 @@ input[type=text]:focus,textarea:focus{outline:none;border-color:var(--sprout);bo
   }
 
   /* ---------- IPO ---------- */
-  var IPO_HINT = {
-    '물주기':      ['수분 점수를 10 올린다', '"물이 충분해졌어요!"'],
-    '햇빛 쬐기':   ['햇빛 점수를 10 올린다', '"햇빛을 잘 먹었어요!"'],
-    '비료 주기':   ['영양 점수를 15 올린다', '작물이 한 단계 자란다'],
-    '벌레 잡기':   ['벌레 수를 1 줄인다', '"벌레를 잡았어요!"'],
-    '온도 맞추기': ['온도를 알맞게 바꾼다', '온도계 색이 초록으로 바뀐다'],
-    '상태 보기':   ['모든 점수를 더한다', '건강 점수와 표정을 보여준다'],
-    '수확하기':    ['자란 정도를 확인한다', '"수확 성공!" 축하 화면']
+  var IPO_EX = {
+    '물주기': {
+      p:['수분 점수 +15','수분을 가득 채운다','물통을 1칸 쓴다'],
+      o:['"물이 충분해졌어요!"','수분 막대가 파래진다','작물이 웃는 표정이 된다']
+    },
+    '햇빛 쬐기': {
+      p:['햇빛 점수 +15','햇빛을 가득 채운다','잎이 튼튼해진다'],
+      o:['"햇빛을 잘 먹었어요!"','햇빛 막대가 노래진다','해 그림이 커진다']
+    },
+    '비료 주기': {
+      p:['영양 점수 +20','성장 속도가 빨라진다','비료를 1개 쓴다'],
+      o:['"쑥쑥 자라요!"','성장 막대가 올라간다','새 잎이 하나 생긴다']
+    },
+    '벌레 잡기': {
+      p:['벌레 수 -1','건강 점수 +20','벌레가 사라진다'],
+      o:['"벌레를 잡았어요!"','벌레 그림이 없어진다','작물이 웃는 표정이 된다']
+    },
+    '온도 맞추기': {
+      p:['온도를 알맞게 바꾼다','온도 점수 +15','너무 더우면 점수 -10'],
+      o:['"온도가 딱 좋아요!"','온도계가 초록으로 바뀐다','작물 표정이 편해진다']
+    },
+    '상태 보기': {
+      p:['모든 점수를 더한다','건강 점수를 계산한다','점수 평균을 낸다'],
+      o:['건강 점수를 보여준다','작물 표정이 나온다','막대 그래프가 나온다']
+    },
+    '수확하기': {
+      p:['성장이 100인지 확인한다','열매 개수를 센다','게임을 끝낸다'],
+      o:['"수확 성공!"','결과 화면이 나온다','열매 개수를 보여준다']
+    }
   };
+  var IPO_DEFAULT = {
+    p:['점수를 10 올린다','점수를 10 내린다','상태를 좋음으로 바꾼다'],
+    o:['"성공했어요!"','점수 막대가 움직인다','작물 표정이 바뀐다']
+  };
+
+  function exBox(list, input){
+    var box = document.createElement('div');
+    box.className = 'exchips';
+    list.forEach(function(t){
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'exchip'; b.textContent = t;
+      b.addEventListener('click', function(){
+        input.value = t;
+        input.dispatchEvent(new Event('input'));
+        input.focus();
+      });
+      box.appendChild(b);
+    });
+    return box;
+  }
+
   function renderIPO(){
     var zone = $('ipoZone');
     zone.innerHTML = '';
@@ -581,57 +683,130 @@ input[type=text]:focus,textarea:focus{outline:none;border-color:var(--sprout);bo
     }
     state.features.forEach(function(f, idx){
       var d = state.ipo[f] || (state.ipo[f] = { i:'「'+f+'」 버튼을 누른다', p:'', o:'' });
-      var h = IPO_HINT[f] || ['무엇이 바뀌나요?', '화면에 무엇이 보이나요?'];
+      var ex = IPO_EX[f] || IPO_DEFAULT;
+      var exI = ['「'+f+'」 버튼을 누른다', '「'+f+'」 그림을 클릭한다', '하루에 한 번 「'+f+'」를 누른다'];
+
       var card = document.createElement('div');
       card.className = 'ipo-card';
       card.innerHTML =
         '<p class="ipo-title">기능 ' + (idx+1) + ' · ' + esc(f) + '</p>' +
         '<div class="ipo-grid">' +
-          '<div class="ipo-cell"><label>입력 — 무엇을 하나요</label><input type="text" data-k="i"></div>' +
-          '<div class="ipo-cell"><label>처리 — 무엇이 바뀌나요</label><input type="text" data-k="p" placeholder="'+esc(h[0])+'"></div>' +
-          '<div class="ipo-cell"><label>출력 — 무엇이 보이나요</label><input type="text" data-k="o" placeholder="'+esc(h[1])+'"></div>' +
+          '<div class="ipo-cell" data-k="i"><label>입력 — 무엇을 하나요</label><input type="text"></div>' +
+          '<div class="ipo-cell" data-k="p"><label>처리 — 무엇이 바뀌나요</label><input type="text" placeholder="아래 예시를 눌러보세요"></div>' +
+          '<div class="ipo-cell" data-k="o"><label>출력 — 무엇이 보이나요</label><input type="text" placeholder="아래 예시를 눌러보세요"></div>' +
         '</div>';
-      card.querySelectorAll('input').forEach(function(inp){
-        var k = inp.getAttribute('data-k');
+
+      var lists = { i: exI, p: ex.p, o: ex.o };
+      card.querySelectorAll('.ipo-cell').forEach(function(cell){
+        var k = cell.getAttribute('data-k');
+        var inp = cell.querySelector('input');
         inp.value = d[k] || '';
         inp.addEventListener('input', function(){ d[k] = inp.value; onChange(); });
+        cell.appendChild(exBox(lists[k], inp));
       });
       zone.appendChild(card);
     });
   }
 
   /* ---------- 프롬프트 ---------- */
+  var FEAT_MAP = {
+    '물주기':      { stat:'수분',  up:'수분 +15', msg:'물이 충분해졌어요!' },
+    '햇빛 쬐기':   { stat:'햇빛',  up:'햇빛 +15', msg:'햇빛을 잘 먹었어요!' },
+    '비료 주기':   { stat:'영양',  up:'영양 +20', msg:'쑥쑥 자랄 준비가 됐어요!' },
+    '벌레 잡기':   { stat:'건강',  up:'건강 +20', msg:'벌레를 잡았어요!' },
+    '온도 맞추기': { stat:'온도',  up:'온도를 알맞게 맞춤', msg:'온도가 딱 좋아졌어요!' },
+    '상태 보기':   { stat:null,    up:'모든 점수를 모아서 보여줌', msg:'지금 작물 상태를 한눈에 보여줌' },
+    '수확하기':    { stat:null,    up:'성장 점수가 100이면 수확 성공', msg:'수확 성공! 결과 화면으로 넘어감' }
+  };
+
+  function statsOf(){
+    var out = [];
+    state.features.forEach(function(f){
+      var m = FEAT_MAP[f];
+      var s = m ? m.stat : f.replace(/\s+/g,'');
+      if(s && out.indexOf(s) === -1) out.push(s);
+    });
+    return out;
+  }
+
   function v(id, fallback){ var t = $(id).value.trim(); return t || (fallback||''); }
+
   function buildPrompt(){
-    var lines = [];
-    lines.push('초등학생이 즐길 수 있는 애그테크 스마트농업 체험 게임을 웹앱으로 만들어줘.');
-    lines.push('');
-    lines.push('게임 이름: ' + v('p2name','(아직 정하지 않음)'));
-    lines.push('키우는 작물: ' + v('p2crop','(아직 정하지 않음)'));
-    lines.push('게임을 하는 사람: ' + v('p2user','(아직 정하지 않음)'));
-    lines.push('해결하려는 문제: ' + v('p1problem','(아직 정하지 않음)'));
-    lines.push('이기는 방법: ' + v('p2goal','(아직 정하지 않음)'));
-    lines.push('');
+    var L = [];
+    var stats = statsOf();
+    var crop = v('p2crop','작물');
+
+    L.push('초등학생이 즐기는 웹 게임을 만들어줘. 아래 내용대로 정확히 만들어줘.');
+    L.push('');
+    L.push('## 만들 것');
+    L.push('- 이름: ' + v('p2name','(정하지 않음)'));
+    L.push('- 종류: 애그테크(스마트농업) 체험 게임, 한 페이지 웹앱');
+    L.push('- 화면 글자는 모두 한국어로 써줘.');
+    L.push('- 로그인, 회원가입, 데이터베이스, 서버는 만들지 마. 새로고침하면 처음부터 시작해도 돼.');
+    L.push('');
+    L.push('## 누가 하는 게임인가');
+    L.push('- 플레이어: ' + v('p2user','초등학생'));
+    L.push('- 키우는 작물: ' + crop);
+    L.push('- 해결하려는 문제: ' + v('p1problem','(정하지 않음)'));
+    L.push('- 문제를 두면: ' + v('p1why','(정하지 않음)'));
+    L.push('');
+    L.push('## 게임 규칙 (가장 중요)');
+    L.push('- 한 판의 길이: ' + v('p2len','10일 동안'));
+    L.push('- 행동 횟수: ' + v('p2turn','하루에 3번') + '. 정해진 횟수를 다 쓰면 자동으로 다음 날로 넘어가.');
+    L.push('- 이기는 조건: ' + v('p2win','(정하지 않음)'));
+    L.push('- 지는 조건: ' + v('p2lose','(정하지 않음)'));
+    L.push('- 이기거나 지면 게임을 반드시 멈추고 결과 화면을 보여줘. 이겼을 때와 졌을 때 화면을 다르게 만들어줘.');
+    L.push('- 결과 화면에는 며칠 만에 끝났는지, 최종 점수, [다시 하기] 버튼을 넣어줘.');
+    L.push('- 게임이 끝난 뒤에는 다른 버튼이 눌리지 않게 막아줘.');
+    L.push('');
+    L.push('## 숫자로 관리할 상태');
+    L.push('- 성장: 0~100, 시작 0');
+    stats.forEach(function(s){ L.push('- ' + s + ': 0~100, 시작 50'); });
+    L.push('- 남은 날짜, 남은 행동 횟수');
+    L.push('');
+    L.push('## 버튼과 동작');
     if(state.features.length){
-      lines.push('버튼은 이렇게 만들어줘:');
       state.features.forEach(function(f, i){
         var d = state.ipo[f] || {};
-        var p = (d.p||'').trim(), o = (d.o||'').trim();
-        var s = (i+1) + '. 「' + f + '」 버튼';
-        if(p) s += ' — 누르면 ' + p;
-        if(o) s += ', 화면에는 ' + o;
-        lines.push(s);
+        var m = FEAT_MAP[f] || {};
+        var p = (d.p||'').trim() || m.up || '점수가 바뀜';
+        var o = (d.o||'').trim() || m.msg || '결과 메시지가 나옴';
+        L.push((i+1) + '. [' + f + '] 버튼 — 누르면 ' + p + ', 화면에는 "' + o + '" 표시');
       });
+      L.push('- 버튼을 한 번 누르면 행동 횟수를 1 써.');
     } else {
-      lines.push('버튼: (아직 정하지 않음)');
+      L.push('(버튼을 아직 정하지 않았어요)');
     }
-    lines.push('');
-    lines.push('화면 분위기: ' + v('p2mood','초등학생이 좋아할 밝고 귀여운 느낌'));
+    L.push('');
+    L.push('## 하루가 지날 때 자동으로');
+    if(stats.length){
+      L.push('- ' + stats.join(', ') + ' 점수가 각각 10씩 줄어들어.');
+      L.push('- ' + stats.join(', ') + ' 점수가 모두 30 이상이면 성장 +10.');
+    } else {
+      L.push('- 점수가 조금씩 줄어들고, 상태가 좋으면 성장 +10.');
+    }
+    L.push('- 남은 날짜를 1 줄이고, 행동 횟수를 다시 채워줘.');
+    L.push('- 날짜가 바뀔 때마다 "○일째" 라고 크게 보여줘.');
+    L.push('');
+    L.push('## 화면 구성');
+    L.push('- 맨 위: 게임 이름, 몇 일째인지, 남은 행동 횟수');
+    L.push('- 가운데: ' + crop + ' 그림을 이모지로 크게 보여주고, 성장 점수에 따라 🌱 → 🌿 → 🌸 → 열매 로 바뀌게 해줘.');
+    L.push('- 그 아래: 상태 점수를 색깔 막대로 보여줘. 점수가 30 아래면 막대가 빨갛게 변하고 경고를 띄워줘.');
+    L.push('- 맨 아래: 버튼들을 한 줄로 크게 배치');
+    L.push('- 게임이 끝나면 화면 가운데에 결과 창을 띄워줘.');
+    L.push('');
+    L.push('## 디자인');
+    L.push('- 분위기: ' + v('p2mood','초등학생이 좋아할 밝고 귀여운 느낌'));
+    L.push('- 초등학교 5~6학년이 쓰는 화면이야. 글씨와 버튼을 크게, 설명은 짧게 해줘.');
+    L.push('- 버튼마다 색을 다르게 해서 무슨 기능인지 바로 알 수 있게 해줘.');
     var extra = $('p4extra').value.trim();
-    if(extra) lines.push('추가 부탁: ' + extra);
-    lines.push('');
-    lines.push('글씨와 버튼은 크게, 한 화면 안에서 모두 움직이게 만들어줘. 한국어로 만들어줘.');
-    return lines.join('\n');
+    if(extra){ L.push(''); L.push('## 더 부탁할 것'); L.push('- ' + extra); }
+    L.push('');
+    L.push('## 하지 말 것');
+    L.push('- 위에 적지 않은 기능은 넣지 마.');
+    L.push('- 긴 설명글이나 어려운 낱말은 쓰지 마.');
+    L.push('- 게임이 끝나지 않고 계속 이어지게 만들지 마.');
+    return L.join('\n');
   }
   $('btnCopy').addEventListener('click', function(){
     var t = buildPrompt();
@@ -653,7 +828,7 @@ input[type=text]:focus,textarea:focus{outline:none;border-color:var(--sprout);bo
 
   /* ---------- 진행 게이지 ---------- */
   function progress(){
-    var reqs = ['fName','p1problem','p1why','p2name','p2crop','p2user','p2goal','p2mood','p5good','p5fix','p5learn'];
+    var reqs = ['fName','p1problem','p1why','p2name','p2crop','p2user','p2len','p2turn','p2win','p2lose','p2mood','p5good','p5fix','p5learn'];
     var done = 0;
     reqs.forEach(function(id){ if($(id).value.trim()) done++; });
     var total = reqs.length + 1;
@@ -723,18 +898,25 @@ input[type=text]:focus,textarea:focus{outline:none;border-color:var(--sprout);bo
         row('게임 이름', $('p2name').value) +
         row('키우는 작물', $('p2crop').value) +
         row('플레이어', $('p2user').value) +
-        row('이기는 방법', $('p2goal').value) +
         row('핵심 기능', state.features.join('  /  ')) +
         row('화면 분위기', $('p2mood').value) +
       '</table>' +
 
-      '<h2>3. 버튼이 하는 일 (입력 → 처리 → 출력)</h2>' +
+      '<h2>3. 게임이 끝나는 조건</h2>' +
+      '<table>' +
+        row('한 판의 길이', $('p2len').value) +
+        row('하루 행동 횟수', $('p2turn').value) +
+        row('이기는 조건', $('p2win').value) +
+        row('지는 조건', $('p2lose').value) +
+      '</table>' +
+
+      '<h2>4. 버튼이 하는 일 (입력 → 처리 → 출력)</h2>' +
       '<table class="ipo"><tr><th>#</th><th>입력</th><th>처리</th><th>출력</th></tr>' + ipoRows + '</table>' +
 
-      '<h2>4. AI에게 부탁한 말</h2>' +
+      '<h2>5. AI에게 부탁한 말 (Lovable 프롬프트)</h2>' +
       '<div class="pr">' + esc(buildPrompt()) + '</div>' +
 
-      '<h2>5. 만들고 나서</h2>' +
+      '<h2>6. 만들고 나서</h2>' +
       '<div class="memo"><b>가장 마음에 드는 점</b>' + (esc($('p5good').value) || '&nbsp;') + '</div>' +
       '<div class="memo"><b>더 고치고 싶은 점</b>' + (esc($('p5fix').value) || '&nbsp;') + '</div>' +
       '<div class="memo"><b>오늘 새롭게 알게 된 것</b>' + (esc($('p5learn').value) || '&nbsp;') + '</div>' +
@@ -744,6 +926,69 @@ input[type=text]:focus,textarea:focus{outline:none;border-color:var(--sprout);bo
   function safe(s){ return String(s).replace(/[\\\/:*?"<>|\s]+/g, '_').replace(/_+/g,'_').replace(/^_|_$/g,''); }
 
   var savedTitle = document.title;
+  var inFrame = (function(){ try { return window.self !== window.top; } catch(e){ return true; } })();
+
+  function buildPlainText(){
+    var L = [];
+    L.push('AI 농부 도우미 게임 설계서');
+    L.push('이름: ' + ($('fName').value || '—') + ' / ' + ($('fClass').value || '학교·반 미기재') + ' / ' + ($('fDate').value || '—'));
+    L.push('');
+    L.push('[1. 해결하고 싶은 농사 문제]');
+    L.push('문제: ' + ($('p1problem').value || '—'));
+    L.push('그냥 두면: ' + ($('p1why').value || '—'));
+    L.push('');
+    L.push('[2. 게임 기획서]');
+    L.push('게임 이름: ' + ($('p2name').value || '—'));
+    L.push('키우는 작물: ' + ($('p2crop').value || '—'));
+    L.push('플레이어: ' + ($('p2user').value || '—'));
+    L.push('핵심 기능: ' + (state.features.join(' / ') || '—'));
+    L.push('화면 분위기: ' + ($('p2mood').value || '—'));
+    L.push('');
+    L.push('[3. 게임이 끝나는 조건]');
+    L.push('한 판의 길이: ' + ($('p2len').value || '—'));
+    L.push('하루 행동 횟수: ' + ($('p2turn').value || '—'));
+    L.push('이기는 조건: ' + ($('p2win').value || '—'));
+    L.push('지는 조건: ' + ($('p2lose').value || '—'));
+    L.push('');
+    L.push('[4. 버튼이 하는 일]');
+    if(state.features.length){
+      state.features.forEach(function(f, i){
+        var d = state.ipo[f] || {};
+        L.push((i+1) + '. ' + (d.i || f) + ' → ' + (d.p || '—') + ' → ' + (d.o || '—'));
+      });
+    } else L.push('—');
+    L.push('');
+    L.push('[5. AI에게 부탁한 말 (Lovable 프롬프트)]');
+    L.push(buildPrompt());
+    L.push('');
+    L.push('[6. 만들고 나서]');
+    L.push('마음에 드는 점: ' + ($('p5good').value || '—'));
+    L.push('고치고 싶은 점: ' + ($('p5fix').value || '—'));
+    L.push('새롭게 알게 된 것: ' + ($('p5learn').value || '—'));
+    return L.join('\n');
+  }
+
+  function copyText(text, okMsg){
+    var done = function(){ flash(okMsg); };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done, fb);
+    } else fb();
+    function fb(){
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position='fixed'; ta.style.left='-9999px';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch(e){ flash('복사하지 못했어요'); }
+      document.body.removeChild(ta);
+    }
+  }
+
+  if(inFrame){
+    $('frameWarn').style.display = 'block';
+    $('helpText').style.display = 'inline-block';
+  }
+  $('helpText').addEventListener('click', function(){
+    copyText(buildPlainText(), '설계서 내용을 복사했어요');
+  });
 
   $('btnPdf').addEventListener('click', function(){
     var name = $('fName').value.trim();
@@ -769,11 +1014,16 @@ input[type=text]:focus,textarea:focus{outline:none;border-color:var(--sprout);bo
     $('printHelp').classList.remove('on');
 
     setTimeout(function(){
-      window.print();
+      var ok = true;
+      try { window.print(); } catch(e){ ok = false; }
       setTimeout(function(){
         document.title = savedTitle;
         $('printDoc').innerHTML = '';
-        flash('PDF 저장 창을 열었어요');
+        if(ok) flash('PDF 저장 창을 열었어요');
+        else {
+          alert('이 화면에서는 인쇄가 막혀 있습니다.\nHTML 파일을 내려받아 브라우저에서 열면 저장됩니다.');
+          $('printHelp').classList.add('on');
+        }
       }, 800);
     }, 60);
   });
