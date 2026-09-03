@@ -6,89 +6,49 @@
 <title>AI 농부 도우미 · 게임 설계서</title>
 <style>
 :root{
-  --soil:#5C4433;
-  --leaf:#0E6B5C;
-  --leaf-soft:#D6EFE6;
-  --sprout:#3FBF7F;
-  --sun:#FFC93C;
-  --sky:#F2FAF5;
-  --ink:#1E3A33;
-  --ink-soft:#5C7A72;
-  --line:#CFE5DA;
-  --white:#fff;
+  --leaf:#0E6B5C; --leaf-soft:#D6EFE6; --sprout:#3FBF7F;
+  --sun:#FFC93C; --sky:#F2FAF5; --ink:#1E3A33; --ink-soft:#5C7A72;
+  --line:#CFE5DA; --plum:#6C5CE7;
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
 body{
   font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
-  background:var(--sky);
-  color:var(--ink);
-  font-size:16px;
-  line-height:1.6;
+  background:var(--sky);color:var(--ink);font-size:16px;line-height:1.6;
   -webkit-font-smoothing:antialiased;
 }
-.wrap{max-width:880px;margin:0 auto;padding:0 20px 120px}
+.wrap{max-width:900px;margin:0 auto;padding:0 20px 120px}
 
-/* ---------- 표지 ---------- */
 .cover{
-  background:var(--leaf);
-  border-radius:0 0 28px 28px;
-  padding:34px 32px 30px;
-  margin:0 -20px 26px;
-  color:#fff;
-  position:relative;
-  overflow:hidden;
+  background:var(--leaf);border-radius:0 0 28px 28px;padding:34px 32px 30px;
+  margin:0 -20px 22px;color:#fff;position:relative;overflow:hidden;
 }
-.cover::after{
-  content:"";position:absolute;right:-40px;top:-40px;
-  width:200px;height:200px;border-radius:50%;
-  background:rgba(63,191,127,.35);
-}
-.cover-kicker{font-size:14px;font-weight:700;color:#9FE7C9;letter-spacing:.02em;margin:0 0 6px}
+.cover::after{content:"";position:absolute;right:-40px;top:-40px;width:200px;height:200px;border-radius:50%;background:rgba(63,191,127,.35)}
+.cover-kicker{font-size:14px;font-weight:700;color:#9FE7C9;margin:0 0 6px}
 .cover h1{font-size:34px;line-height:1.25;font-weight:800;margin:0 0 4px;position:relative;z-index:1}
 .cover p{margin:0 0 22px;color:#BDEBD8;font-size:15px;position:relative;z-index:1}
-.tag{
-  background:rgba(255,255,255,.14);
-  border:1px solid rgba(255,255,255,.28);
-  border-radius:16px;padding:16px 18px;
-  display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;
-  position:relative;z-index:1;
-}
+.tag{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);border-radius:16px;padding:16px 18px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;position:relative;z-index:1}
 .tag label{display:block;font-size:13px;font-weight:700;color:#BDEBD8;margin-bottom:6px}
-.tag input{
-  width:100%;border:none;border-radius:9px;padding:11px 12px;
-  font-family:inherit;font-size:16px;font-weight:600;color:var(--ink);background:#fff;
-}
+.tag input{width:100%;border:none;border-radius:9px;padding:11px 12px;font-family:inherit;font-size:16px;font-weight:600;color:var(--ink);background:#fff}
 .tag input:focus{outline:3px solid var(--sun);outline-offset:1px}
 
-/* ---------- 진행 게이지 ---------- */
-.gauge{
-  position:sticky;top:0;z-index:30;
-  background:rgba(242,250,245,.94);
-  backdrop-filter:blur(6px);
-  padding:12px 0 10px;margin:0 0 22px;
-  border-bottom:1px solid var(--line);
-}
+/* 게임 흐름도 */
+.flow{background:#12312B;border-radius:16px;padding:18px 20px;margin-bottom:22px;color:#DFF4EA}
+.flow h3{margin:0 0 12px;font-size:15px;font-weight:800;color:#9FE7C9}
+.flow-line{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.flow-step{background:rgba(255,255,255,.1);border-radius:9px;padding:8px 12px;font-size:13.5px;font-weight:600}
+.flow-step.hi{background:var(--sun);color:#4A3A00}
+.flow-arrow{color:#5E8F80;font-weight:700}
+
+.gauge{position:sticky;top:0;z-index:30;background:rgba(242,250,245,.94);backdrop-filter:blur(6px);padding:12px 0 10px;margin:0 0 22px;border-bottom:1px solid var(--line)}
 .gauge-row{display:flex;align-items:center;gap:12px}
 .gauge-track{flex:1;height:12px;background:#DCEDE4;border-radius:99px;overflow:hidden}
 .gauge-fill{height:100%;width:0%;background:var(--sprout);border-radius:99px;transition:width .35s ease}
 .gauge-txt{font-size:14px;font-weight:700;color:var(--leaf);white-space:nowrap}
 
-/* ---------- 스텝 ---------- */
-.step{
-  background:var(--white);
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:26px 26px 24px;
-  margin-bottom:18px;
-}
+.step{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px 26px 24px;margin-bottom:18px}
 .step-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:6px}
-.step-no{
-  flex:none;width:38px;height:38px;border-radius:12px;
-  background:var(--leaf-soft);color:var(--leaf);
-  font-weight:800;font-size:17px;
-  display:flex;align-items:center;justify-content:center;
-}
+.step-no{flex:none;width:38px;height:38px;border-radius:12px;background:var(--leaf-soft);color:var(--leaf);font-weight:800;font-size:17px;display:flex;align-items:center;justify-content:center}
 .step h2{margin:4px 0 0;font-size:21px;font-weight:800;line-height:1.35}
 .step-sub{margin:2px 0 22px 52px;color:var(--ink-soft);font-size:14.5px}
 
@@ -97,150 +57,89 @@ body{
 .field > label{display:block;font-size:15.5px;font-weight:700;margin-bottom:4px}
 .hint{font-size:13.5px;color:var(--ink-soft);margin:0 0 10px}
 
-.subgroup{
-  background:#F4FAF7;border:1.5px solid var(--line);
-  border-radius:14px;padding:20px 18px 18px;margin-bottom:22px;
-}
-.subhead{
-  margin:0 0 2px;font-size:16px;font-weight:800;color:var(--leaf);
-  display:flex;align-items:center;gap:8px;
-}
-.subhead::before{content:"⏱";font-size:17px}
-
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
-.chip{
-  font-family:inherit;font-size:14px;font-weight:600;
-  background:#F4FAF7;border:1.5px solid var(--line);color:var(--ink);
-  border-radius:99px;padding:8px 14px;cursor:pointer;
-  transition:background .15s,border-color .15s;
-}
+.chip{font-family:inherit;font-size:14px;font-weight:600;background:#F4FAF7;border:1.5px solid var(--line);color:var(--ink);border-radius:99px;padding:8px 14px;cursor:pointer;transition:background .15s,border-color .15s}
 .chip:hover{background:var(--leaf-soft);border-color:var(--sprout)}
 .chip:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
 .chip.on{background:var(--leaf);border-color:var(--leaf);color:#fff}
 
-input[type=text],textarea{
-  width:100%;font-family:inherit;font-size:15.5px;color:var(--ink);
-  border:1.5px solid var(--line);border-radius:11px;
-  padding:11px 13px;background:#fff;line-height:1.55;
-}
+input[type=text],textarea,select{width:100%;font-family:inherit;font-size:15.5px;color:var(--ink);border:1.5px solid var(--line);border-radius:11px;padding:11px 13px;background:#fff;line-height:1.55}
 textarea{resize:vertical;min-height:74px}
-input[type=text]:focus,textarea:focus{outline:none;border-color:var(--sprout);box-shadow:0 0 0 3px rgba(63,191,127,.2)}
+select{cursor:pointer}
+input[type=text]:focus,textarea:focus,select:focus{outline:none;border-color:var(--sprout);box-shadow:0 0 0 3px rgba(63,191,127,.2)}
 ::placeholder{color:#A6BFB6}
 
-/* 기능 선택 */
 .picked{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0;min-height:8px}
-.picked-item{
-  display:inline-flex;align-items:center;gap:8px;
-  background:var(--sun);border-radius:99px;padding:7px 8px 7px 14px;
-  font-size:14px;font-weight:700;color:#4A3A00;
-}
-.picked-item button{
-  border:none;background:rgba(0,0,0,.14);color:#4A3A00;
-  width:20px;height:20px;border-radius:50%;cursor:pointer;
-  font-size:13px;line-height:1;font-family:inherit;
-}
+.picked-item{display:inline-flex;align-items:center;gap:8px;background:var(--sun);border-radius:99px;padding:7px 8px 7px 14px;font-size:14px;font-weight:700;color:#4A3A00}
+.picked-item button{border:none;background:rgba(0,0,0,.14);color:#4A3A00;width:20px;height:20px;border-radius:50%;cursor:pointer;font-size:13px;line-height:1;font-family:inherit}
 .addrow{display:flex;gap:8px;margin-top:10px}
 .addrow input{flex:1}
-.btn-sm{
-  font-family:inherit;font-size:14px;font-weight:700;
-  border:1.5px solid var(--leaf);background:#fff;color:var(--leaf);
-  border-radius:10px;padding:0 16px;cursor:pointer;white-space:nowrap;
-}
+.btn-sm{font-family:inherit;font-size:14px;font-weight:700;border:1.5px solid var(--leaf);background:#fff;color:var(--leaf);border-radius:10px;padding:0 16px;cursor:pointer;white-space:nowrap}
 .btn-sm:hover{background:var(--leaf-soft)}
 
-/* IPO */
-.ipo-empty{
-  background:#F4FAF7;border:1.5px dashed var(--line);border-radius:12px;
-  padding:22px;text-align:center;color:var(--ink-soft);font-size:14.5px;
-}
-.ipo-card{border:1.5px solid var(--line);border-radius:14px;padding:16px 16px 14px;margin-bottom:12px;background:#FCFEFD}
-.ipo-title{font-size:15px;font-weight:800;color:var(--leaf);margin:0 0 12px}
+/* 미니게임 카드 */
+.mg-empty,.ms-empty{background:#F4FAF7;border:1.5px dashed var(--line);border-radius:12px;padding:22px;text-align:center;color:var(--ink-soft);font-size:14.5px}
+.mg-card{border:1.5px solid var(--line);border-radius:14px;padding:16px 16px 14px;margin-bottom:14px;background:#FCFEFD}
+.mg-title{font-size:15.5px;font-weight:800;color:var(--leaf);margin:0 0 12px;display:flex;align-items:center;gap:8px}
+.mg-badge{background:var(--sun);color:#4A3A00;border-radius:7px;padding:2px 9px;font-size:12.5px;font-weight:800}
+.mg-styles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:14px}
+.mg-style{font-family:inherit;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:11px;padding:10px 12px;cursor:pointer;line-height:1.4}
+.mg-style:hover{border-color:var(--sprout);background:#F4FAF7}
+.mg-style:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.mg-style.on{border-color:var(--plum);background:#EFECFF;box-shadow:0 0 0 2px rgba(108,92,231,.18)}
+.mg-style b{display:block;font-size:14px;font-weight:800;color:var(--ink);margin-bottom:2px}
+.mg-style span{font-size:12.5px;color:var(--ink-soft)}
 .ipo-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 .ipo-cell label{display:block;font-size:12.5px;font-weight:700;color:var(--ink-soft);margin-bottom:5px}
 .ipo-cell input{font-size:14.5px;padding:9px 11px}
 .exchips{display:grid;gap:5px;margin-top:6px}
-.exchip{
-  font-family:inherit;font-size:12.5px;font-weight:600;line-height:1.45;
-  background:#fff;border:1.5px solid var(--line);color:var(--ink-soft);
-  border-radius:8px;padding:6px 10px;cursor:pointer;text-align:left;width:100%;
-}
+.exchip{font-family:inherit;font-size:12.5px;font-weight:600;line-height:1.45;background:#fff;border:1.5px solid var(--line);color:var(--ink-soft);border-radius:8px;padding:6px 10px;cursor:pointer;text-align:left;width:100%}
 .exchip:hover{background:var(--leaf-soft);border-color:var(--sprout);color:var(--ink)}
-.exchip:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
 
-/* 프롬프트 */
-.prompt-box{
-  background:#12312B;border-radius:14px;padding:18px;
-  color:#DFF4EA;font-size:14px;line-height:1.75;
-  white-space:pre-wrap;word-break:break-word;
-  max-height:440px;overflow:auto;
-}
-.prompt-box em{color:#FFC93C;font-style:normal;font-weight:700}
+/* 미션 카드 */
+.ms-card{border:1.5px solid var(--line);border-left:7px solid var(--sun);border-radius:14px;padding:16px;margin-bottom:12px;background:#FFFDF6}
+.ms-title{font-size:15.5px;font-weight:800;color:#8A6A00;margin:0 0 12px}
+.ms-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.ms-row:last-child{margin-bottom:0}
+.ms-cell label{display:block;font-size:12.5px;font-weight:700;color:var(--ink-soft);margin-bottom:5px}
+
+.subgroup{background:#F4FAF7;border:1.5px solid var(--line);border-radius:14px;padding:20px 18px 18px;margin-bottom:22px}
+.subhead{margin:0 0 2px;font-size:16px;font-weight:800;color:var(--leaf)}
+
+.prompt-box{background:#12312B;border-radius:14px;padding:18px;color:#DFF4EA;font-size:13.5px;line-height:1.75;white-space:pre-wrap;word-break:break-word;max-height:460px;overflow:auto}
 .copy-row{display:flex;gap:10px;align-items:center;margin-top:12px}
-.btn-copy{
-  font-family:inherit;font-size:14.5px;font-weight:700;
-  background:var(--leaf);color:#fff;border:none;border-radius:11px;
-  padding:11px 20px;cursor:pointer;
-}
+.btn-copy{font-family:inherit;font-size:14.5px;font-weight:700;background:var(--leaf);color:#fff;border:none;border-radius:11px;padding:11px 20px;cursor:pointer}
 .btn-copy:hover{background:#0B5C4F}
 .copy-msg{font-size:14px;font-weight:700;color:var(--sprout)}
 
-/* 하단 액션 */
-.actions{
-  position:fixed;left:0;right:0;bottom:0;z-index:40;
-  background:#fff;border-top:1px solid var(--line);
-  padding:14px 20px;
-}
-.actions-in{
-  max-width:880px;margin:0 auto;
-  display:flex;align-items:center;gap:12px;
-}
+.actions{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#fff;border-top:1px solid var(--line);padding:14px 20px}
+.actions-in{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:12px}
 .save-state{font-size:13.5px;color:var(--ink-soft);flex:1}
-.btn-ghost{
-  font-family:inherit;font-size:14.5px;font-weight:700;
-  background:#fff;border:1.5px solid var(--line);color:var(--ink-soft);
-  border-radius:12px;padding:12px 16px;cursor:pointer;
-}
-.btn-pdf{
-  font-family:inherit;font-size:16px;font-weight:800;
-  background:var(--sun);color:#4A3A00;border:none;
-  border-radius:12px;padding:13px 26px;cursor:pointer;
-}
+.btn-ghost{font-family:inherit;font-size:14.5px;font-weight:700;background:#fff;border:1.5px solid var(--line);color:var(--ink-soft);border-radius:12px;padding:12px 16px;cursor:pointer}
+.btn-pdf{font-family:inherit;font-size:16px;font-weight:800;background:var(--sun);color:#4A3A00;border:none;border-radius:12px;padding:13px 26px;cursor:pointer}
 .btn-pdf:hover{background:#F5BC1F}
-.btn-pdf:disabled{background:#E4E9E7;color:#9BAFA8;cursor:default}
 
-@media (max-width:700px){
-  .tag{grid-template-columns:1fr}
-  .ipo-grid{grid-template-columns:1fr}
-  .cover h1{font-size:27px}
-}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.printHelp{position:fixed;inset:0;z-index:60;background:rgba(18,49,43,.6);display:none;align-items:center;justify-content:center;padding:20px}
+.printHelp.on{display:flex}
+.printHelp-card{background:#fff;border-radius:18px;padding:28px 28px 22px;max-width:440px}
+.printHelp-card h3{margin:0 0 12px;font-size:20px;font-weight:800}
+.printHelp-card ol{margin:0 0 18px;padding-left:20px;font-size:15.5px;line-height:1.85}
+.printHelp-card ol b{background:#FFF2C9;padding:1px 5px;border-radius:4px}
+.printHelp-row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
 
-/* ---------- 인쇄(PDF) 전용 ---------- */
 #printDoc{display:none}
 @page{size:A4 portrait;margin:11mm}
 @media print{
   html,body{background:#fff;font-size:12pt}
   .wrap,.actions,.gauge,.printHelp{display:none !important}
-  #printDoc{
-    display:block;width:auto;
-    -webkit-print-color-adjust:exact;print-color-adjust:exact;
-  }
+  #printDoc{display:block;width:auto;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
-
-/* ---------- 인쇄 안내 ---------- */
-.printHelp{
-  position:fixed;inset:0;z-index:60;
-  background:rgba(18,49,43,.6);
-  display:none;align-items:center;justify-content:center;padding:20px;
+@media (max-width:760px){
+  .tag{grid-template-columns:1fr}
+  .ipo-grid,.ms-row{grid-template-columns:1fr}
+  .cover h1{font-size:27px}
 }
-.printHelp.on{display:flex}
-.printHelp-card{
-  background:#fff;border-radius:18px;padding:28px 28px 22px;max-width:430px;
-}
-.printHelp-card h3{margin:0 0 12px;font-size:20px;font-weight:800}
-.printHelp-card ol{margin:0 0 18px;padding-left:20px;font-size:15.5px;line-height:1.85}
-.printHelp-card ol b{background:#FFF2C9;padding:1px 5px;border-radius:4px}
-.printHelp-row{display:flex;gap:10px;justify-content:flex-end}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
@@ -250,66 +149,63 @@ input[type=text]:focus,textarea:focus{outline:none;border-color:var(--sprout);bo
   <header class="cover">
     <p class="cover-kicker">애그테크 · 스마트농업 체험 게임</p>
     <h1>AI 농부 도우미<br>게임 설계서</h1>
-    <p>만들기 전에 먼저 그려봅니다. 다 채우면 PDF로 저장할 수 있어요.</p>
+    <p>매일 미션이 주어지고, 미니게임으로 해결하는 농사 게임을 설계합니다.</p>
     <div class="tag">
-      <div>
-        <label for="fDate">오늘 날짜</label>
-        <input type="date" id="fDate">
-      </div>
-      <div>
-        <label for="fName">이름</label>
-        <input type="text" id="fName" placeholder="예: 김하늘" autocomplete="off">
-      </div>
-      <div>
-        <label for="fClass">학교 · 반 (선택)</label>
-        <input type="text" id="fClass" placeholder="예: 초록초 6-2" autocomplete="off">
-      </div>
+      <div><label for="fDate">오늘 날짜</label><input type="date" id="fDate"></div>
+      <div><label for="fName">이름</label><input type="text" id="fName" placeholder="예: 김하늘" autocomplete="off"></div>
+      <div><label for="fClass">학교 · 반 (선택)</label><input type="text" id="fClass" placeholder="예: 초록초 6-2" autocomplete="off"></div>
     </div>
   </header>
+
+  <div class="flow">
+    <h3>내가 만들 게임은 이렇게 돌아갑니다</h3>
+    <div class="flow-line">
+      <span class="flow-step">아침에 오늘의 미션 등장</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step">알맞은 버튼 고르기</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step hi">미니게임 시작</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step">성공하면 오늘 농사 성공</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step">다음 날로</span>
+    </div>
+  </div>
 
   <div class="gauge">
     <div class="gauge-row">
       <span class="gauge-txt" id="gaugeIcon">🌱</span>
       <div class="gauge-track"><div class="gauge-fill" id="gaugeFill"></div></div>
-      <span class="gauge-txt" id="gaugeTxt">0 / 12 칸</span>
+      <span class="gauge-txt" id="gaugeTxt">0 / 0 칸</span>
     </div>
   </div>
 
-  <!-- STEP 1 -->
+  <!-- 1 -->
   <section class="step">
-    <div class="step-head">
-      <div class="step-no">1</div>
-      <h2>내가 해결하고 싶은 농사 문제</h2>
-    </div>
-    <p class="step-sub">게임으로 만들 문제를 하나만 고릅니다. 문제가 뾰족할수록 게임이 재미있어져요.</p>
-
+    <div class="step-head"><div class="step-no">1</div><h2>내가 돕고 싶은 농사 문제</h2></div>
+    <p class="step-sub">게임으로 만들 문제를 하나만 고릅니다.</p>
     <div class="field">
       <label>어떤 문제를 다룰까요?</label>
-      <p class="hint">버튼을 누르면 아래 칸에 문장이 들어갑니다. 내 말로 고쳐 써도 좋아요.</p>
+      <p class="hint">버튼을 누르면 아래 칸이 채워집니다. 내 말로 고쳐도 좋아요.</p>
       <div class="chips" data-fill="p1problem">
         <button type="button" class="chip">물 주는 때를 자꾸 놓쳐요</button>
         <button type="button" class="chip">햇빛이 부족한지 알기 어려워요</button>
         <button type="button" class="chip">날씨가 갑자기 더워지거나 추워져요</button>
         <button type="button" class="chip">벌레와 병이 생기는 걸 늦게 알아요</button>
-        <button type="button" class="chip">언제 거둬야 할지 모르겠어요</button>
         <button type="button" class="chip">작물이 많아서 혼자 다 못 살펴요</button>
       </div>
       <input type="text" id="p1problem" data-req placeholder="한 문장으로 써 보세요">
     </div>
-
     <div class="field">
-      <label>이 문제를 그냥 두면 어떤 일이 생기나요?</label>
+      <label>그냥 두면 어떤 일이 생기나요?</label>
       <input type="text" id="p1why" data-req placeholder="예: 물을 못 줘서 잎이 시들고 결국 말라 죽어요">
     </div>
   </section>
 
-  <!-- STEP 2 -->
+  <!-- 2 -->
   <section class="step">
-    <div class="step-head">
-      <div class="step-no">2</div>
-      <h2>게임 기획서</h2>
-    </div>
-    <p class="step-sub">어떤 게임인지 한눈에 알 수 있게 정리합니다.</p>
+    <div class="step-head"><div class="step-no">2</div><h2>게임 기본 설정</h2></div>
+    <p class="step-sub">게임의 겉모습을 정합니다.</p>
 
     <div class="field">
       <label>게임 이름</label>
@@ -317,8 +213,8 @@ input[type=text]:focus,textarea:focus{outline:none;border-color:var(--sprout);bo
         <button type="button" class="chip">새싹 지킴이</button>
         <button type="button" class="chip">텃밭 대장</button>
         <button type="button" class="chip">쑥쑥 농장</button>
+        <button type="button" class="chip">미션! 농부 출동</button>
         <button type="button" class="chip">AI 농부 수첩</button>
-        <button type="button" class="chip">물주기 마스터</button>
       </div>
       <input type="text" id="p2name" data-req placeholder="친구가 듣고 기억할 만한 이름으로">
     </div>
@@ -348,74 +244,6 @@ input[type=text]:focus,textarea:focus{outline:none;border-color:var(--sprout);bo
     </div>
 
     <div class="field">
-      <label>핵심 기능 버튼 (2~3개까지)</label>
-      <p class="hint">욕심내면 시간 안에 못 만듭니다. 꼭 필요한 것만 고르세요.</p>
-      <div class="chips" id="featChips">
-        <button type="button" class="chip" data-f="물주기">💧 물주기</button>
-        <button type="button" class="chip" data-f="햇빛 쬐기">☀️ 햇빛 쬐기</button>
-        <button type="button" class="chip" data-f="비료 주기">🌿 비료 주기</button>
-        <button type="button" class="chip" data-f="벌레 잡기">🐛 벌레 잡기</button>
-        <button type="button" class="chip" data-f="온도 맞추기">🌡️ 온도 맞추기</button>
-        <button type="button" class="chip" data-f="상태 보기">📊 상태 보기</button>
-        <button type="button" class="chip" data-f="수확하기">🧺 수확하기</button>
-      </div>
-      <div class="addrow">
-        <input type="text" id="featCustom" placeholder="직접 만들기 (예: 새 쫓기)">
-        <button type="button" class="btn-sm" id="featAdd">추가</button>
-      </div>
-      <div class="picked" id="featPicked"></div>
-    </div>
-
-    <div class="subgroup">
-      <p class="subhead">게임이 끝나는 때</p>
-      <p class="hint" style="margin-bottom:18px">끝나는 조건이 없으면 게임이 영원히 이어집니다. 네 가지를 모두 정하세요.</p>
-
-      <div class="field">
-        <label>한 판은 얼마 동안 하나요?</label>
-        <div class="chips" data-fill="p2len">
-          <button type="button" class="chip">10일 동안</button>
-          <button type="button" class="chip">20일 동안</button>
-          <button type="button" class="chip">30일 동안</button>
-          <button type="button" class="chip">3분 동안</button>
-        </div>
-        <input type="text" id="p2len" data-req placeholder="예: 10일 동안">
-      </div>
-
-      <div class="field">
-        <label>하루에 몇 번 움직일 수 있나요?</label>
-        <p class="hint">횟수를 정해야 학생이 아무 버튼이나 계속 누르지 않습니다.</p>
-        <div class="chips" data-fill="p2turn">
-          <button type="button" class="chip">하루에 2번</button>
-          <button type="button" class="chip">하루에 3번</button>
-          <button type="button" class="chip">하루에 5번</button>
-        </div>
-        <input type="text" id="p2turn" data-req placeholder="예: 하루에 3번">
-      </div>
-
-      <div class="field">
-        <label>이렇게 하면 이겨요</label>
-        <div class="chips" data-fill="p2win">
-          <button type="button" class="chip">마지막 날까지 작물이 살아 있으면 이겨요</button>
-          <button type="button" class="chip">성장 점수가 100점이 되면 이겨요</button>
-          <button type="button" class="chip">작물을 수확하면 이겨요</button>
-          <button type="button" class="chip">열매를 5개 모으면 이겨요</button>
-        </div>
-        <input type="text" id="p2win" data-req placeholder="이기는 조건">
-      </div>
-
-      <div class="field">
-        <label>이렇게 되면 져요</label>
-        <div class="chips" data-fill="p2lose">
-          <button type="button" class="chip">수분이 0이 되면 작물이 말라 죽어요</button>
-          <button type="button" class="chip">건강 점수가 0이 되면 져요</button>
-          <button type="button" class="chip">마지막 날까지 다 못 키우면 져요</button>
-          <button type="button" class="chip">벌레가 5마리가 되면 져요</button>
-        </div>
-        <input type="text" id="p2lose" data-req placeholder="지는 조건">
-      </div>
-    </div>
-
-    <div class="field">
       <label>화면 분위기</label>
       <div class="chips" data-fill="p2mood">
         <button type="button" class="chip">귀여운 파스텔 색</button>
@@ -427,31 +255,99 @@ input[type=text]:focus,textarea:focus{outline:none;border-color:var(--sprout);bo
     </div>
   </section>
 
-  <!-- STEP 3 -->
+  <!-- 3 -->
   <section class="step">
-    <div class="step-head">
-      <div class="step-no">3</div>
-      <h2>버튼이 하는 일 (입력 → 처리 → 출력)</h2>
+    <div class="step-head"><div class="step-no">3</div><h2>버튼과 미니게임</h2></div>
+    <p class="step-sub">버튼을 고르면 그 버튼마다 어떤 미니게임이 나올지 정합니다. 버튼을 누르면 곧바로 미니게임이 시작됩니다.</p>
+
+    <div class="field">
+      <label>농사 버튼 고르기 (2~3개까지)</label>
+      <p class="hint">욕심내면 시간 안에 못 만듭니다. 꼭 필요한 것만 고르세요.</p>
+      <div class="chips" id="featChips">
+        <button type="button" class="chip" data-f="물주기">💧 물주기</button>
+        <button type="button" class="chip" data-f="햇빛 쬐기">☀️ 햇빛 쬐기</button>
+        <button type="button" class="chip" data-f="비료 주기">🌿 비료 주기</button>
+        <button type="button" class="chip" data-f="벌레 잡기">🐛 벌레 잡기</button>
+        <button type="button" class="chip" data-f="온도 맞추기">🌡️ 온도 맞추기</button>
+        <button type="button" class="chip" data-f="잡초 뽑기">🌾 잡초 뽑기</button>
+        <button type="button" class="chip" data-f="수확하기">🧺 수확하기</button>
+      </div>
+      <div class="addrow">
+        <input type="text" id="featCustom" placeholder="직접 만들기 (예: 새 쫓기)">
+        <button type="button" class="btn-sm" id="featAdd">추가</button>
+      </div>
+      <div class="picked" id="featPicked"></div>
     </div>
-    <p class="step-sub">위에서 고른 버튼마다 칸이 생깁니다. 아래 예시를 눌러 채운 뒤, 내 게임에 맞게 고쳐 쓰세요.</p>
-    <div id="ipoZone">
-      <div class="ipo-empty">2단계에서 기능 버튼을 먼저 골라 주세요.</div>
+
+    <div id="mgZone"><div class="mg-empty">위에서 버튼을 먼저 골라 주세요.</div></div>
+  </section>
+
+  <!-- 4 -->
+  <section class="step">
+    <div class="step-head"><div class="step-no">4</div><h2>하루하루 미션 만들기</h2></div>
+    <p class="step-sub">아침마다 미션이 뜹니다. 어떤 버튼을 눌러야 할지 학생이 스스로 판단하게 만드는 것이 이 게임의 핵심입니다.</p>
+    <div id="msZone"><div class="ms-empty">3단계에서 버튼을 먼저 골라 주세요.</div></div>
+
+    <div class="subgroup" style="margin-top:20px">
+      <p class="subhead">미션을 못 지키면?</p>
+      <p class="hint" style="margin-bottom:14px">엉뚱한 버튼을 누르거나 미니게임에 실패했을 때의 벌칙입니다.</p>
+      <div class="chips" data-fill="p4fail">
+        <button type="button" class="chip">건강 점수가 20 깎여요</button>
+        <button type="button" class="chip">그날은 하나도 자라지 못해요</button>
+        <button type="button" class="chip">잎이 하나 시들어요</button>
+        <button type="button" class="chip">벌레가 한 마리 늘어나요</button>
+      </div>
+      <input type="text" id="p4fail" data-req placeholder="실패했을 때 일어나는 일">
     </div>
   </section>
 
-  <!-- STEP 4 -->
+  <!-- 5 -->
   <section class="step">
-    <div class="step-head">
-      <div class="step-no">4</div>
-      <h2>AI에게 부탁할 말</h2>
-    </div>
-    <p class="step-sub">위에 쓴 내용이 자동으로 모입니다. 복사해서 AI에게 그대로 붙여넣으면 됩니다.</p>
+    <div class="step-head"><div class="step-no">5</div><h2>게임이 끝나는 때</h2></div>
+    <p class="step-sub">끝나는 조건이 없으면 게임이 영원히 이어집니다. 세 가지를 모두 정하세요.</p>
 
     <div class="field">
-      <label>더 부탁하고 싶은 것 (선택)</label>
-      <input type="text" id="p4extra" placeholder="예: 버튼 누를 때 소리가 나게 해줘">
+      <label>한 판은 며칠인가요?</label>
+      <div class="chips" data-fill="p5len">
+        <button type="button" class="chip">5일</button>
+        <button type="button" class="chip">7일</button>
+        <button type="button" class="chip">10일</button>
+        <button type="button" class="chip">14일</button>
+      </div>
+      <input type="text" id="p5len" data-req placeholder="예: 7일">
     </div>
 
+    <div class="field">
+      <label>이렇게 하면 이겨요</label>
+      <div class="chips" data-fill="p5win">
+        <button type="button" class="chip">마지막 날까지 미션을 모두 성공하면 이겨요</button>
+        <button type="button" class="chip">미션을 5번 성공하면 수확해서 이겨요</button>
+        <button type="button" class="chip">성장 점수가 100이 되면 이겨요</button>
+        <button type="button" class="chip">열매를 3개 모으면 이겨요</button>
+      </div>
+      <input type="text" id="p5win" data-req placeholder="이기는 조건">
+    </div>
+
+    <div class="field">
+      <label>이렇게 되면 져요</label>
+      <div class="chips" data-fill="p5lose">
+        <button type="button" class="chip">건강 점수가 0이 되면 작물이 죽어요</button>
+        <button type="button" class="chip">미션을 3번 실패하면 져요</button>
+        <button type="button" class="chip">마지막 날까지 다 못 키우면 져요</button>
+        <button type="button" class="chip">벌레가 5마리가 되면 져요</button>
+      </div>
+      <input type="text" id="p5lose" data-req placeholder="지는 조건">
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="step">
+    <div class="step-head"><div class="step-no">6</div><h2>AI에게 부탁할 말</h2></div>
+    <p class="step-sub">위에 쓴 내용이 자동으로 모입니다. 복사해서 Lovable에 그대로 붙여넣으세요.</p>
+    <div class="field">
+      <label>더 부탁하고 싶은 것 (선택)</label>
+      <input type="text" id="p6extra" placeholder="예: 버튼 누를 때 소리가 나게 해줘">
+    </div>
     <div class="prompt-box" id="promptBox"></div>
     <div class="copy-row">
       <button type="button" class="btn-copy" id="btnCopy">프롬프트 복사</button>
@@ -459,26 +355,13 @@ input[type=text]:focus,textarea:focus{outline:none;border-color:var(--sprout);bo
     </div>
   </section>
 
-  <!-- STEP 5 -->
+  <!-- 7 -->
   <section class="step">
-    <div class="step-head">
-      <div class="step-no">5</div>
-      <h2>만들고 나서</h2>
-    </div>
+    <div class="step-head"><div class="step-no">7</div><h2>만들고 나서</h2></div>
     <p class="step-sub">게임을 직접 해 본 뒤에 적습니다.</p>
-
-    <div class="field">
-      <label>가장 마음에 드는 점</label>
-      <textarea id="p5good" data-req placeholder="내 게임에서 제일 잘 된 부분"></textarea>
-    </div>
-    <div class="field">
-      <label>더 고치고 싶은 점</label>
-      <textarea id="p5fix" data-req placeholder="시간이 더 있다면 무엇을 바꿀까요"></textarea>
-    </div>
-    <div class="field">
-      <label>오늘 새롭게 알게 된 것</label>
-      <textarea id="p5learn" data-req placeholder="애그테크, 기획, IPO, 바이브코딩 중에서"></textarea>
-    </div>
+    <div class="field"><label>가장 마음에 드는 점</label><textarea id="p7good" data-req placeholder="내 게임에서 제일 잘 된 부분"></textarea></div>
+    <div class="field"><label>더 고치고 싶은 점</label><textarea id="p7fix" data-req placeholder="시간이 더 있다면 무엇을 바꿀까요"></textarea></div>
+    <div class="field"><label>오늘 새롭게 알게 된 것</label><textarea id="p7learn" data-req placeholder="애그테크, 기획, 미션 설계, 바이브코딩 중에서"></textarea></div>
   </section>
 
 </div>
@@ -500,8 +383,7 @@ input[type=text]:focus,textarea:focus{outline:none;border-color:var(--sprout);bo
       <li><b>저장</b> 버튼을 누릅니다.</li>
     </ol>
     <p id="frameWarn" style="display:none;margin:-8px 0 16px;padding:12px 14px;background:#FFF6DC;border:1.5px solid #F0C94B;border-radius:11px;font-size:14px;line-height:1.6;color:#6B5200;">
-      지금은 미리보기 창이라 인쇄가 막혀 있을 수 있어요.<br>
-      저장이 안 되면 아래 <b>설계서 텍스트 복사</b>를 눌러 붙여넣어 두세요.
+      지금은 미리보기 창이라 인쇄가 막혀 있을 수 있어요.<br>저장이 안 되면 <b>설계서 텍스트 복사</b>를 눌러 붙여넣어 두세요.
     </p>
     <div class="printHelp-row">
       <button type="button" class="btn-ghost" id="helpCancel">그만두기</button>
@@ -515,539 +397,477 @@ input[type=text]:focus,textarea:focus{outline:none;border-color:var(--sprout);bo
 
 <script>
 (function(){
-  "use strict";
+"use strict";
 
-  var FIELDS = ['fDate','fName','fClass','p1problem','p1why','p2name','p2crop','p2user','p2len','p2turn','p2win','p2lose','p2mood','p4extra','p5good','p5fix','p5learn'];
-  var state = { features: [], ipo: {} };
-  var $ = function(id){ return document.getElementById(id); };
-  var esc = function(s){ return String(s==null?'':s).replace(/[&<>"]/g, function(c){
-    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); };
+var FIELDS = ['fDate','fName','fClass','p1problem','p1why','p2name','p2crop','p2user','p2mood','p4fail','p5len','p5win','p5lose','p6extra','p7good','p7fix','p7learn'];
+var state = { features: [], feat: {}, miss: [] };
+var $ = function(id){ return document.getElementById(id); };
+var esc = function(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); };
 
-  /* ---------- 저장소 (있으면 쓰고, 없으면 이번 시간에만 유지) ---------- */
-  var mem = {};
-  var KEY = 'agtech-design-sheet';
-  function saveState(){
-    var data = { features: state.features, ipo: state.ipo };
-    FIELDS.forEach(function(id){ data[id] = $(id).value; });
-    var json = JSON.stringify(data);
-    mem[KEY] = json;
-    try {
-      if (window.storage && window.storage.set) {
-        window.storage.set(KEY, json).catch(function(){});
-      }
-    } catch(e){}
-    flash('임시 저장됨 · ' + new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}));
-  }
-  function loadState(){
-    var json = mem[KEY];
-    var apply = function(j){
-      if(!j) return;
-      var d;
-      try { d = JSON.parse(j); } catch(e){ return; }
-      FIELDS.forEach(function(id){ if(typeof d[id]==='string') $(id).value = d[id]; });
-      state.features = Array.isArray(d.features) ? d.features : [];
-      state.ipo = d.ipo && typeof d.ipo==='object' ? d.ipo : {};
-      renderFeatures(); renderIPO(); refresh();
-    };
-    apply(json);
-    try {
-      if (window.storage && window.storage.get) {
-        window.storage.get(KEY).then(function(r){ if(r && r.value) apply(r.value); }).catch(function(){});
-      }
-    } catch(e){}
-  }
-  var flashTimer;
-  function flash(msg){
-    $('saveState').textContent = msg;
-    clearTimeout(flashTimer);
-    flashTimer = setTimeout(function(){ $('saveState').textContent = '자동으로 임시 저장됩니다'; }, 2600);
-  }
+/* ============ 미니게임 스타일 ============ */
+var MINI = {
+  '받기형': { emoji:'🪣', desc:'위에서 떨어지는 것을 바구니로 받기',
+    i:'좌우 방향키로 바구니를 움직인다', p:'떨어지는 아이템을 10개 받으면 성공', o:'"미션 성공!" 이 뜨고 점수가 오른다' },
+  '쏘기형': { emoji:'🚀', desc:'날아오는 것을 미사일로 맞히기',
+    i:'마우스로 클릭해서 미사일을 쏜다', p:'벌레를 8마리 없애면 성공', o:'벌레가 사라지고 작물이 웃는다' },
+  '클릭형': { emoji:'👆', desc:'나타나는 아이콘을 빠르게 누르기',
+    i:'화면에 뜬 아이콘을 마우스로 클릭한다', p:'10초 안에 15개를 누르면 성공', o:'점수 막대가 가득 찬다' },
+  '타이밍형': { emoji:'🎯', desc:'움직이는 막대를 딱 맞게 멈추기',
+    i:'스페이스바를 눌러 막대를 멈춘다', p:'초록 칸에서 3번 중 2번 멈추면 성공', o:'"딱 맞췄어요!" 가 나온다' },
+  '피하기형': { emoji:'🏃', desc:'날아오는 방해물을 피해 다니기',
+    i:'방향키로 캐릭터를 움직인다', p:'15초 동안 한 번도 안 맞으면 성공', o:'무사히 하루를 넘긴다' },
+  '기억형': { emoji:'🧠', desc:'반짝인 순서를 그대로 따라 누르기',
+    i:'반짝인 칸을 순서대로 클릭한다', p:'4단계까지 맞히면 성공', o:'"기억력 대단해요!" 가 나온다' }
+};
+var MINI_ORDER = ['받기형','쏘기형','클릭형','타이밍형','피하기형','기억형'];
+var SUGGEST = { '물주기':'받기형','햇빛 쬐기':'클릭형','비료 주기':'기억형','벌레 잡기':'쏘기형','온도 맞추기':'타이밍형','잡초 뽑기':'클릭형','수확하기':'받기형' };
 
-  /* ---------- 칩: 누르면 아래 칸을 채움 ---------- */
-  document.querySelectorAll('.chips[data-fill]').forEach(function(box){
-    var target = $(box.getAttribute('data-fill'));
-    box.querySelectorAll('.chip').forEach(function(chip){
-      chip.addEventListener('click', function(){
-        target.value = chip.textContent.replace(/^[^\p{L}\p{N}]+/u,'').trim();
-        target.focus();
-        box.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('on'); });
-        chip.classList.add('on');
-        onChange();
-      });
-    });
-    target.addEventListener('input', function(){
-      box.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('on'); });
-    });
-  });
+var SIT = ['햇볕이 쨍쨍! 흙이 바싹 말랐어요','며칠째 흐려서 햇빛이 부족해요','잎에 벌레가 붙어 갉아먹고 있어요','잎이 노랗게 변했어요','밤새 기온이 뚝 떨어졌어요','비가 너무 많이 내렸어요','잡초가 쑥쑥 자랐어요'];
+var REWARD = ['건강 점수 +20','성장 점수 +15','열매가 하나 생긴다','작물이 한 단계 자란다','별을 하나 얻는다'];
 
-  /* ---------- 기능 선택 (최대 3개) ---------- */
-  function addFeature(name){
-    name = (name||'').trim();
-    if(!name) return;
-    if(state.features.indexOf(name) > -1) return;
-    if(state.features.length >= 3){ flash('기능은 3개까지만 고를 수 있어요'); return; }
-    state.features.push(name);
-    if(!state.ipo[name]) state.ipo[name] = { i:'「'+name+'」 버튼을 누른다', p:'', o:'' };
-    renderFeatures(); renderIPO(); onChange();
-  }
-  function removeFeature(name){
-    state.features = state.features.filter(function(f){ return f !== name; });
-    renderFeatures(); renderIPO(); onChange();
-  }
-  $('featChips').querySelectorAll('.chip').forEach(function(chip){
-    chip.addEventListener('click', function(){
-      var n = chip.getAttribute('data-f');
-      if(state.features.indexOf(n) > -1) removeFeature(n); else addFeature(n);
-    });
-  });
-  $('featAdd').addEventListener('click', function(){
-    addFeature($('featCustom').value); $('featCustom').value = '';
-  });
-  $('featCustom').addEventListener('keydown', function(e){
-    if(e.key === 'Enter'){ e.preventDefault(); $('featAdd').click(); }
-  });
-
-  function renderFeatures(){
-    var box = $('featPicked');
-    box.innerHTML = '';
-    state.features.forEach(function(f){
-      var el = document.createElement('span');
-      el.className = 'picked-item';
-      el.innerHTML = esc(f) + ' <button type="button" aria-label="'+esc(f)+' 빼기">✕</button>';
-      el.querySelector('button').addEventListener('click', function(){ removeFeature(f); });
-      box.appendChild(el);
-    });
-    $('featChips').querySelectorAll('.chip').forEach(function(c){
-      c.classList.toggle('on', state.features.indexOf(c.getAttribute('data-f')) > -1);
-    });
-  }
-
-  /* ---------- IPO ---------- */
-  var IPO_EX = {
-    '물주기': {
-      p:['수분 점수 +15','수분을 가득 채운다','물통을 1칸 쓴다'],
-      o:['"물이 충분해졌어요!"','수분 막대가 파래진다','작물이 웃는 표정이 된다']
-    },
-    '햇빛 쬐기': {
-      p:['햇빛 점수 +15','햇빛을 가득 채운다','잎이 튼튼해진다'],
-      o:['"햇빛을 잘 먹었어요!"','햇빛 막대가 노래진다','해 그림이 커진다']
-    },
-    '비료 주기': {
-      p:['영양 점수 +20','성장 속도가 빨라진다','비료를 1개 쓴다'],
-      o:['"쑥쑥 자라요!"','성장 막대가 올라간다','새 잎이 하나 생긴다']
-    },
-    '벌레 잡기': {
-      p:['벌레 수 -1','건강 점수 +20','벌레가 사라진다'],
-      o:['"벌레를 잡았어요!"','벌레 그림이 없어진다','작물이 웃는 표정이 된다']
-    },
-    '온도 맞추기': {
-      p:['온도를 알맞게 바꾼다','온도 점수 +15','너무 더우면 점수 -10'],
-      o:['"온도가 딱 좋아요!"','온도계가 초록으로 바뀐다','작물 표정이 편해진다']
-    },
-    '상태 보기': {
-      p:['모든 점수를 더한다','건강 점수를 계산한다','점수 평균을 낸다'],
-      o:['건강 점수를 보여준다','작물 표정이 나온다','막대 그래프가 나온다']
-    },
-    '수확하기': {
-      p:['성장이 100인지 확인한다','열매 개수를 센다','게임을 끝낸다'],
-      o:['"수확 성공!"','결과 화면이 나온다','열매 개수를 보여준다']
-    }
+/* ============ 저장 ============ */
+var mem = {}, KEY = 'agtech-design-v2', flashTimer, saveTimer;
+function flash(m){ $('saveState').textContent = m; clearTimeout(flashTimer);
+  flashTimer = setTimeout(function(){ $('saveState').textContent='자동으로 임시 저장됩니다'; }, 2600); }
+function saveState(){
+  var d = { features:state.features, feat:state.feat, miss:state.miss };
+  FIELDS.forEach(function(id){ d[id] = $(id).value; });
+  var j = JSON.stringify(d); mem[KEY] = j;
+  try { if(window.storage && window.storage.set) window.storage.set(KEY, j).catch(function(){}); } catch(e){}
+  flash('임시 저장됨 · ' + new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}));
+}
+function loadState(){
+  var apply = function(j){
+    if(!j) return; var d; try{ d = JSON.parse(j); }catch(e){ return; }
+    FIELDS.forEach(function(id){ if(typeof d[id]==='string') $(id).value = d[id]; });
+    state.features = Array.isArray(d.features)?d.features:[];
+    state.feat = d.feat && typeof d.feat==='object' ? d.feat : {};
+    state.miss = Array.isArray(d.miss)?d.miss:[];
+    renderAll();
   };
-  var IPO_DEFAULT = {
-    p:['점수를 10 올린다','점수를 10 내린다','상태를 좋음으로 바꾼다'],
-    o:['"성공했어요!"','점수 막대가 움직인다','작물 표정이 바뀐다']
-  };
+  apply(mem[KEY]);
+  try { if(window.storage && window.storage.get) window.storage.get(KEY).then(function(r){ if(r&&r.value) apply(r.value); }).catch(function(){}); } catch(e){}
+}
 
-  function exBox(list, input){
-    var box = document.createElement('div');
-    box.className = 'exchips';
-    list.forEach(function(t){
+/* ============ 칩 ============ */
+document.querySelectorAll('.chips[data-fill]').forEach(function(box){
+  var t = $(box.getAttribute('data-fill'));
+  box.querySelectorAll('.chip').forEach(function(c){
+    c.addEventListener('click', function(){
+      t.value = c.textContent.replace(/^[^\p{L}\p{N}]+/u,'').trim(); t.focus();
+      box.querySelectorAll('.chip').forEach(function(x){ x.classList.remove('on'); });
+      c.classList.add('on'); onChange();
+    });
+  });
+  t.addEventListener('input', function(){ box.querySelectorAll('.chip').forEach(function(x){ x.classList.remove('on'); }); });
+});
+
+/* ============ 버튼 선택 ============ */
+function addFeature(n){
+  n = (n||'').trim(); if(!n) return;
+  if(state.features.indexOf(n) > -1) return;
+  if(state.features.length >= 3){ flash('버튼은 3개까지만 고를 수 있어요'); return; }
+  state.features.push(n);
+  if(!state.feat[n]){
+    var s = SUGGEST[n] || '클릭형', m = MINI[s];
+    state.feat[n] = { mini:s, i:m.i, p:m.p, o:m.o };
+  }
+  syncMissions(); renderAll(); onChange();
+}
+function removeFeature(n){
+  state.features = state.features.filter(function(f){ return f!==n; });
+  syncMissions(); renderAll(); onChange();
+}
+$('featChips').querySelectorAll('.chip').forEach(function(c){
+  c.addEventListener('click', function(){
+    var n = c.getAttribute('data-f');
+    if(state.features.indexOf(n) > -1) removeFeature(n); else addFeature(n);
+  });
+});
+$('featAdd').addEventListener('click', function(){ addFeature($('featCustom').value); $('featCustom').value=''; });
+$('featCustom').addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); $('featAdd').click(); } });
+
+function syncMissions(){
+  var n = state.features.length ? 3 : 0;
+  while(state.miss.length < n) state.miss.push({ sit:'', btn:'', reward:'' });
+  state.miss.length = n;
+  state.miss.forEach(function(m){ if(state.features.indexOf(m.btn) === -1) m.btn = ''; });
+}
+
+/* ============ 렌더 ============ */
+function renderFeatures(){
+  var box = $('featPicked'); box.innerHTML = '';
+  state.features.forEach(function(f){
+    var el = document.createElement('span'); el.className = 'picked-item';
+    el.innerHTML = esc(f) + ' <button type="button" aria-label="빼기">✕</button>';
+    el.querySelector('button').addEventListener('click', function(){ removeFeature(f); });
+    box.appendChild(el);
+  });
+  $('featChips').querySelectorAll('.chip').forEach(function(c){
+    c.classList.toggle('on', state.features.indexOf(c.getAttribute('data-f')) > -1);
+  });
+}
+
+function exBox(list, input){
+  var box = document.createElement('div'); box.className = 'exchips';
+  list.forEach(function(t){
+    var b = document.createElement('button');
+    b.type='button'; b.className='exchip'; b.textContent = t;
+    b.addEventListener('click', function(){ input.value = t; input.dispatchEvent(new Event('input')); input.focus(); });
+    box.appendChild(b);
+  });
+  return box;
+}
+
+function renderMini(){
+  var zone = $('mgZone'); zone.innerHTML = '';
+  if(!state.features.length){ zone.innerHTML = '<div class="mg-empty">위에서 버튼을 먼저 골라 주세요.</div>'; return; }
+
+  state.features.forEach(function(f, idx){
+    var d = state.feat[f];
+    var card = document.createElement('div'); card.className = 'mg-card';
+    var head = document.createElement('p'); head.className = 'mg-title';
+    head.innerHTML = '<span class="mg-badge">버튼 ' + (idx+1) + '</span> ' + esc(f) + ' 을(를) 누르면 시작되는 미니게임';
+    card.appendChild(head);
+
+    var sw = document.createElement('div'); sw.className = 'mg-styles';
+    MINI_ORDER.forEach(function(s){
+      var m = MINI[s];
       var b = document.createElement('button');
-      b.type = 'button'; b.className = 'exchip'; b.textContent = t;
+      b.type='button'; b.className='mg-style' + (d.mini===s ? ' on' : '');
+      b.innerHTML = '<b>' + m.emoji + ' ' + s + '</b><span>' + esc(m.desc) + '</span>';
       b.addEventListener('click', function(){
-        input.value = t;
-        input.dispatchEvent(new Event('input'));
-        input.focus();
+        d.mini = s; d.i = m.i; d.p = m.p; d.o = m.o;
+        renderMini(); onChange();
       });
-      box.appendChild(b);
+      sw.appendChild(b);
     });
-    return box;
-  }
+    card.appendChild(sw);
 
-  function renderIPO(){
-    var zone = $('ipoZone');
-    zone.innerHTML = '';
-    if(state.features.length === 0){
-      zone.innerHTML = '<div class="ipo-empty">2단계에서 기능 버튼을 먼저 골라 주세요.</div>';
-      return;
-    }
-    state.features.forEach(function(f, idx){
-      var d = state.ipo[f] || (state.ipo[f] = { i:'「'+f+'」 버튼을 누른다', p:'', o:'' });
-      var ex = IPO_EX[f] || IPO_DEFAULT;
-      var exI = ['「'+f+'」 버튼을 누른다', '「'+f+'」 그림을 클릭한다', '하루에 한 번 「'+f+'」를 누른다'];
+    var grid = document.createElement('div'); grid.className = 'ipo-grid';
+    grid.innerHTML =
+      '<div class="ipo-cell" data-k="i"><label>입력 — 어떻게 조작하나요</label><input type="text"></div>' +
+      '<div class="ipo-cell" data-k="p"><label>처리 — 언제 성공인가요</label><input type="text"></div>' +
+      '<div class="ipo-cell" data-k="o"><label>출력 — 성공하면 무엇이 보이나요</label><input type="text"></div>';
+    card.appendChild(grid);
 
-      var card = document.createElement('div');
-      card.className = 'ipo-card';
-      card.innerHTML =
-        '<p class="ipo-title">기능 ' + (idx+1) + ' · ' + esc(f) + '</p>' +
-        '<div class="ipo-grid">' +
-          '<div class="ipo-cell" data-k="i"><label>입력 — 무엇을 하나요</label><input type="text"></div>' +
-          '<div class="ipo-cell" data-k="p"><label>처리 — 무엇이 바뀌나요</label><input type="text" placeholder="아래 예시를 눌러보세요"></div>' +
-          '<div class="ipo-cell" data-k="o"><label>출력 — 무엇이 보이나요</label><input type="text" placeholder="아래 예시를 눌러보세요"></div>' +
-        '</div>';
-
-      var lists = { i: exI, p: ex.p, o: ex.o };
-      card.querySelectorAll('.ipo-cell').forEach(function(cell){
-        var k = cell.getAttribute('data-k');
-        var inp = cell.querySelector('input');
-        inp.value = d[k] || '';
-        inp.addEventListener('input', function(){ d[k] = inp.value; onChange(); });
-        cell.appendChild(exBox(lists[k], inp));
-      });
-      zone.appendChild(card);
-    });
-  }
-
-  /* ---------- 프롬프트 ---------- */
-  var FEAT_MAP = {
-    '물주기':      { stat:'수분',  up:'수분 +15', msg:'물이 충분해졌어요!' },
-    '햇빛 쬐기':   { stat:'햇빛',  up:'햇빛 +15', msg:'햇빛을 잘 먹었어요!' },
-    '비료 주기':   { stat:'영양',  up:'영양 +20', msg:'쑥쑥 자랄 준비가 됐어요!' },
-    '벌레 잡기':   { stat:'건강',  up:'건강 +20', msg:'벌레를 잡았어요!' },
-    '온도 맞추기': { stat:'온도',  up:'온도를 알맞게 맞춤', msg:'온도가 딱 좋아졌어요!' },
-    '상태 보기':   { stat:null,    up:'모든 점수를 모아서 보여줌', msg:'지금 작물 상태를 한눈에 보여줌' },
-    '수확하기':    { stat:null,    up:'성장 점수가 100이면 수확 성공', msg:'수확 성공! 결과 화면으로 넘어감' }
-  };
-
-  function statsOf(){
-    var out = [];
-    state.features.forEach(function(f){
-      var m = FEAT_MAP[f];
-      var s = m ? m.stat : f.replace(/\s+/g,'');
-      if(s && out.indexOf(s) === -1) out.push(s);
-    });
-    return out;
-  }
-
-  function v(id, fallback){ var t = $(id).value.trim(); return t || (fallback||''); }
-
-  function buildPrompt(){
-    var L = [];
-    var stats = statsOf();
-    var crop = v('p2crop','작물');
-
-    L.push('초등학생이 즐기는 웹 게임을 만들어줘. 아래 내용대로 정확히 만들어줘.');
-    L.push('');
-    L.push('## 만들 것');
-    L.push('- 이름: ' + v('p2name','(정하지 않음)'));
-    L.push('- 종류: 애그테크(스마트농업) 체험 게임, 한 페이지 웹앱');
-    L.push('- 화면 글자는 모두 한국어로 써줘.');
-    L.push('- 로그인, 회원가입, 데이터베이스, 서버는 만들지 마. 새로고침하면 처음부터 시작해도 돼.');
-    L.push('');
-    L.push('## 누가 하는 게임인가');
-    L.push('- 플레이어: ' + v('p2user','초등학생'));
-    L.push('- 키우는 작물: ' + crop);
-    L.push('- 해결하려는 문제: ' + v('p1problem','(정하지 않음)'));
-    L.push('- 문제를 두면: ' + v('p1why','(정하지 않음)'));
-    L.push('');
-    L.push('## 게임 규칙 (가장 중요)');
-    L.push('- 한 판의 길이: ' + v('p2len','10일 동안'));
-    L.push('- 행동 횟수: ' + v('p2turn','하루에 3번') + '. 정해진 횟수를 다 쓰면 자동으로 다음 날로 넘어가.');
-    L.push('- 이기는 조건: ' + v('p2win','(정하지 않음)'));
-    L.push('- 지는 조건: ' + v('p2lose','(정하지 않음)'));
-    L.push('- 이기거나 지면 게임을 반드시 멈추고 결과 화면을 보여줘. 이겼을 때와 졌을 때 화면을 다르게 만들어줘.');
-    L.push('- 결과 화면에는 며칠 만에 끝났는지, 최종 점수, [다시 하기] 버튼을 넣어줘.');
-    L.push('- 게임이 끝난 뒤에는 다른 버튼이 눌리지 않게 막아줘.');
-    L.push('');
-    L.push('## 숫자로 관리할 상태');
-    L.push('- 성장: 0~100, 시작 0');
-    stats.forEach(function(s){ L.push('- ' + s + ': 0~100, 시작 50'); });
-    L.push('- 남은 날짜, 남은 행동 횟수');
-    L.push('');
-    L.push('## 버튼과 동작');
-    if(state.features.length){
-      state.features.forEach(function(f, i){
-        var d = state.ipo[f] || {};
-        var m = FEAT_MAP[f] || {};
-        var p = (d.p||'').trim() || m.up || '점수가 바뀜';
-        var o = (d.o||'').trim() || m.msg || '결과 메시지가 나옴';
-        L.push((i+1) + '. [' + f + '] 버튼 — 누르면 ' + p + ', 화면에는 "' + o + '" 표시');
-      });
-      L.push('- 버튼을 한 번 누르면 행동 횟수를 1 써.');
-    } else {
-      L.push('(버튼을 아직 정하지 않았어요)');
-    }
-    L.push('');
-    L.push('## 하루가 지날 때 자동으로');
-    if(stats.length){
-      L.push('- ' + stats.join(', ') + ' 점수가 각각 10씩 줄어들어.');
-      L.push('- ' + stats.join(', ') + ' 점수가 모두 30 이상이면 성장 +10.');
-    } else {
-      L.push('- 점수가 조금씩 줄어들고, 상태가 좋으면 성장 +10.');
-    }
-    L.push('- 남은 날짜를 1 줄이고, 행동 횟수를 다시 채워줘.');
-    L.push('- 날짜가 바뀔 때마다 "○일째" 라고 크게 보여줘.');
-    L.push('');
-    L.push('## 화면 구성');
-    L.push('- 맨 위: 게임 이름, 몇 일째인지, 남은 행동 횟수');
-    L.push('- 가운데: ' + crop + ' 그림을 이모지로 크게 보여주고, 성장 점수에 따라 🌱 → 🌿 → 🌸 → 열매 로 바뀌게 해줘.');
-    L.push('- 그 아래: 상태 점수를 색깔 막대로 보여줘. 점수가 30 아래면 막대가 빨갛게 변하고 경고를 띄워줘.');
-    L.push('- 맨 아래: 버튼들을 한 줄로 크게 배치');
-    L.push('- 게임이 끝나면 화면 가운데에 결과 창을 띄워줘.');
-    L.push('');
-    L.push('## 디자인');
-    L.push('- 분위기: ' + v('p2mood','초등학생이 좋아할 밝고 귀여운 느낌'));
-    L.push('- 초등학교 5~6학년이 쓰는 화면이야. 글씨와 버튼을 크게, 설명은 짧게 해줘.');
-    L.push('- 버튼마다 색을 다르게 해서 무슨 기능인지 바로 알 수 있게 해줘.');
-    var extra = $('p4extra').value.trim();
-    if(extra){ L.push(''); L.push('## 더 부탁할 것'); L.push('- ' + extra); }
-    L.push('');
-    L.push('## 하지 말 것');
-    L.push('- 위에 적지 않은 기능은 넣지 마.');
-    L.push('- 긴 설명글이나 어려운 낱말은 쓰지 마.');
-    L.push('- 게임이 끝나지 않고 계속 이어지게 만들지 마.');
-    return L.join('\n');
-  }
-  $('btnCopy').addEventListener('click', function(){
-    var t = buildPrompt();
-    var done = function(){
-      $('copyMsg').textContent = '복사했어요';
-      setTimeout(function(){ $('copyMsg').textContent = ''; }, 2200);
+    var ex = {
+      i: [MINI[d.mini].i, '마우스로 드래그해서 움직인다', '화면을 손가락으로 누른다'],
+      p: [MINI[d.mini].p, '10초 안에 다 끝내면 성공', '실수 없이 5번 맞히면 성공'],
+      o: [MINI[d.mini].o, '"오늘 농사 성공!" 이 나온다', '작물이 한 뼘 자란다']
     };
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(t).then(done, fallbackCopy);
-    } else fallbackCopy();
-    function fallbackCopy(){
-      var ta = document.createElement('textarea');
-      ta.value = t; ta.style.position='fixed'; ta.style.left='-9999px';
-      document.body.appendChild(ta); ta.select();
-      try{ document.execCommand('copy'); done(); }catch(e){ $('copyMsg').textContent='직접 드래그해서 복사해 주세요'; }
-      document.body.removeChild(ta);
-    }
+    grid.querySelectorAll('.ipo-cell').forEach(function(cell){
+      var k = cell.getAttribute('data-k'), inp = cell.querySelector('input');
+      inp.value = d[k] || '';
+      inp.addEventListener('input', function(){ d[k] = inp.value; onChange(); });
+      cell.appendChild(exBox(ex[k], inp));
+    });
+    zone.appendChild(card);
   });
+}
 
-  /* ---------- 진행 게이지 ---------- */
-  function progress(){
-    var reqs = ['fName','p1problem','p1why','p2name','p2crop','p2user','p2len','p2turn','p2win','p2lose','p2mood','p5good','p5fix','p5learn'];
-    var done = 0;
-    reqs.forEach(function(id){ if($(id).value.trim()) done++; });
-    var total = reqs.length + 1;
-    if(state.features.length >= 2) done++;
-    return { done: done, total: total };
-  }
-  function refresh(){
-    var pr = progress();
-    var pct = Math.round(pr.done / pr.total * 100);
-    $('gaugeFill').style.width = pct + '%';
-    $('gaugeTxt').textContent = pr.done + ' / ' + pr.total + ' 칸';
-    $('gaugeIcon').textContent = pct >= 100 ? '🌻' : pct >= 60 ? '🌿' : '🌱';
-    $('promptBox').textContent = buildPrompt();
-  }
+function renderMissions(){
+  var zone = $('msZone'); zone.innerHTML = '';
+  if(!state.features.length){ zone.innerHTML = '<div class="ms-empty">3단계에서 버튼을 먼저 골라 주세요.</div>'; return; }
 
-  var saveTimer;
-  function onChange(){
-    refresh();
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(saveState, 700);
-  }
-  FIELDS.forEach(function(id){ $(id).addEventListener('input', onChange); });
-
-  /* ---------- PDF ---------- */
-  function row(label, value){
-    return '<tr><th>' + esc(label) + '</th><td>' + (value ? esc(value) : '<span class="blank">—</span>') + '</td></tr>';
-  }
-  function buildPrintDoc(){
-    var ipoRows = state.features.length
-      ? state.features.map(function(f, i){
-          var d = state.ipo[f] || {};
-          return '<tr><td class="n">' + (i+1) + '</td><td>' + esc(d.i || ('「'+f+'」 버튼을 누른다')) +
-                 '</td><td>' + (d.p ? esc(d.p) : '<span class="blank">—</span>') +
-                 '</td><td>' + (d.o ? esc(d.o) : '<span class="blank">—</span>') + '</td></tr>';
-        }).join('')
-      : '<tr><td class="n">—</td><td colspan="3"><span class="blank">기능을 정하지 않았습니다</span></td></tr>';
-
-    return '' +
-    '<div style="font-family:\'Pretendard Variable\',Pretendard,-apple-system,\'Malgun Gothic\',sans-serif;color:#1E3A33;background:#fff;">' +
-      '<style>' +
-        '#printDoc h2{font-size:13pt;font-weight:800;color:#0E6B5C;margin:18px 0 8px;padding-bottom:5px;border-bottom:2px solid #0E6B5C;break-after:avoid;page-break-after:avoid;}' +
-        '#printDoc table{width:100%;border-collapse:collapse;font-size:10.5pt;break-inside:avoid;page-break-inside:avoid;}' +
-        '#printDoc th,#printDoc td{border:1px solid #9CC7B7;padding:7px 9px;text-align:left;vertical-align:top;line-height:1.5;}' +
-        '#printDoc th{background:#EDF8F3;font-weight:700;width:120px;color:#0E6B5C;}' +
-        '#printDoc .ipo th{background:#DCEFE7;color:#0E6B5C;width:auto;text-align:center;}' +
-        '#printDoc .ipo td.n{width:28px;text-align:center;font-weight:700;color:#0E6B5C;}' +
-        '#printDoc .blank{color:#9CAFA9;}' +
-        '#printDoc .pr{background:#F4FAF7;border:1px solid #9CC7B7;color:#1E3A33;border-radius:8px;padding:12px 14px;font-size:9.5pt;line-height:1.7;white-space:pre-wrap;word-break:break-word;break-inside:avoid;page-break-inside:avoid;}' +
-        '#printDoc .memo{border:1px solid #9CC7B7;border-radius:7px;padding:8px 11px;font-size:10.5pt;min-height:40px;line-height:1.6;margin-bottom:8px;break-inside:avoid;page-break-inside:avoid;}' +
-        '#printDoc .memo b{display:block;font-size:9pt;color:#5C7A72;margin-bottom:3px;font-weight:700;}' +
-      '</style>' +
-      '<div style="background:#EDF8F3;border:2px solid #0E6B5C;border-left-width:9px;border-radius:10px;padding:14px 18px;">' +
-        '<div style="font-size:9.5pt;font-weight:700;color:#3D8C7A;">애그테크 · 스마트농업 체험 게임</div>' +
-        '<div style="font-size:20pt;font-weight:800;margin:2px 0 9px;color:#0E6B5C;">AI 농부 도우미 게임 설계서</div>' +
-        '<div style="font-size:11pt;font-weight:600;color:#1E3A33;">' +
-          '이름 ' + esc($('fName').value || '—') +
-          ' &nbsp;·&nbsp; ' + esc($('fClass').value || '학교·반 미기재') +
-          ' &nbsp;·&nbsp; ' + esc($('fDate').value || '—') +
-        '</div>' +
+  state.miss.forEach(function(m, i){
+    var card = document.createElement('div'); card.className = 'ms-card';
+    var opts = '<option value="">— 고르세요 —</option>' + state.features.map(function(f){
+      return '<option value="'+esc(f)+'"'+(m.btn===f?' selected':'')+'>'+esc(f)+'</option>'; }).join('');
+    card.innerHTML =
+      '<p class="ms-title">☀️ ' + (i+1) + '일째 미션</p>' +
+      '<div class="ms-row">' +
+        '<div class="ms-cell" data-k="sit"><label>오늘의 상황</label><input type="text" placeholder="아래 예시를 눌러보세요"></div>' +
+        '<div class="ms-cell"><label>눌러야 하는 버튼 (정답)</label><select data-k="btn">' + opts + '</select></div>' +
       '</div>' +
+      '<div class="ms-row" style="grid-template-columns:1fr">' +
+        '<div class="ms-cell" data-k="reward"><label>미션에 성공하면</label><input type="text" placeholder="아래 예시를 눌러보세요"></div>' +
+      '</div>';
 
-      '<h2>1. 해결하고 싶은 농사 문제</h2>' +
-      '<table>' + row('문제', $('p1problem').value) + row('그냥 두면', $('p1why').value) + '</table>' +
+    var sitInp = card.querySelector('[data-k="sit"] input');
+    sitInp.value = m.sit || '';
+    sitInp.addEventListener('input', function(){ m.sit = sitInp.value; onChange(); });
+    card.querySelector('[data-k="sit"]').appendChild(exBox(SIT.slice(i*2, i*2+3).concat(SIT.slice(0,1)).slice(0,3), sitInp));
 
-      '<h2>2. 게임 기획서</h2>' +
-      '<table>' +
-        row('게임 이름', $('p2name').value) +
-        row('키우는 작물', $('p2crop').value) +
-        row('플레이어', $('p2user').value) +
-        row('핵심 기능', state.features.join('  /  ')) +
-        row('화면 분위기', $('p2mood').value) +
-      '</table>' +
+    var sel = card.querySelector('select[data-k="btn"]');
+    sel.addEventListener('change', function(){ m.btn = sel.value; onChange(); });
 
-      '<h2>3. 게임이 끝나는 조건</h2>' +
-      '<table>' +
-        row('한 판의 길이', $('p2len').value) +
-        row('하루 행동 횟수', $('p2turn').value) +
-        row('이기는 조건', $('p2win').value) +
-        row('지는 조건', $('p2lose').value) +
-      '</table>' +
+    var rwInp = card.querySelector('[data-k="reward"] input');
+    rwInp.value = m.reward || '';
+    rwInp.addEventListener('input', function(){ m.reward = rwInp.value; onChange(); });
+    card.querySelector('[data-k="reward"]').appendChild(exBox(REWARD.slice(0,3), rwInp));
 
-      '<h2>4. 버튼이 하는 일 (입력 → 처리 → 출력)</h2>' +
-      '<table class="ipo"><tr><th>#</th><th>입력</th><th>처리</th><th>출력</th></tr>' + ipoRows + '</table>' +
-
-      '<h2>5. AI에게 부탁한 말 (Lovable 프롬프트)</h2>' +
-      '<div class="pr">' + esc(buildPrompt()) + '</div>' +
-
-      '<h2>6. 만들고 나서</h2>' +
-      '<div class="memo"><b>가장 마음에 드는 점</b>' + (esc($('p5good').value) || '&nbsp;') + '</div>' +
-      '<div class="memo"><b>더 고치고 싶은 점</b>' + (esc($('p5fix').value) || '&nbsp;') + '</div>' +
-      '<div class="memo"><b>오늘 새롭게 알게 된 것</b>' + (esc($('p5learn').value) || '&nbsp;') + '</div>' +
-    '</div>';
-  }
-
-  function safe(s){ return String(s).replace(/[\\\/:*?"<>|\s]+/g, '_').replace(/_+/g,'_').replace(/^_|_$/g,''); }
-
-  var savedTitle = document.title;
-  var inFrame = (function(){ try { return window.self !== window.top; } catch(e){ return true; } })();
-
-  function buildPlainText(){
-    var L = [];
-    L.push('AI 농부 도우미 게임 설계서');
-    L.push('이름: ' + ($('fName').value || '—') + ' / ' + ($('fClass').value || '학교·반 미기재') + ' / ' + ($('fDate').value || '—'));
-    L.push('');
-    L.push('[1. 해결하고 싶은 농사 문제]');
-    L.push('문제: ' + ($('p1problem').value || '—'));
-    L.push('그냥 두면: ' + ($('p1why').value || '—'));
-    L.push('');
-    L.push('[2. 게임 기획서]');
-    L.push('게임 이름: ' + ($('p2name').value || '—'));
-    L.push('키우는 작물: ' + ($('p2crop').value || '—'));
-    L.push('플레이어: ' + ($('p2user').value || '—'));
-    L.push('핵심 기능: ' + (state.features.join(' / ') || '—'));
-    L.push('화면 분위기: ' + ($('p2mood').value || '—'));
-    L.push('');
-    L.push('[3. 게임이 끝나는 조건]');
-    L.push('한 판의 길이: ' + ($('p2len').value || '—'));
-    L.push('하루 행동 횟수: ' + ($('p2turn').value || '—'));
-    L.push('이기는 조건: ' + ($('p2win').value || '—'));
-    L.push('지는 조건: ' + ($('p2lose').value || '—'));
-    L.push('');
-    L.push('[4. 버튼이 하는 일]');
-    if(state.features.length){
-      state.features.forEach(function(f, i){
-        var d = state.ipo[f] || {};
-        L.push((i+1) + '. ' + (d.i || f) + ' → ' + (d.p || '—') + ' → ' + (d.o || '—'));
-      });
-    } else L.push('—');
-    L.push('');
-    L.push('[5. AI에게 부탁한 말 (Lovable 프롬프트)]');
-    L.push(buildPrompt());
-    L.push('');
-    L.push('[6. 만들고 나서]');
-    L.push('마음에 드는 점: ' + ($('p5good').value || '—'));
-    L.push('고치고 싶은 점: ' + ($('p5fix').value || '—'));
-    L.push('새롭게 알게 된 것: ' + ($('p5learn').value || '—'));
-    return L.join('\n');
-  }
-
-  function copyText(text, okMsg){
-    var done = function(){ flash(okMsg); };
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(text).then(done, fb);
-    } else fb();
-    function fb(){
-      var ta = document.createElement('textarea');
-      ta.value = text; ta.style.position='fixed'; ta.style.left='-9999px';
-      document.body.appendChild(ta); ta.select();
-      try { document.execCommand('copy'); done(); } catch(e){ flash('복사하지 못했어요'); }
-      document.body.removeChild(ta);
-    }
-  }
-
-  if(inFrame){
-    $('frameWarn').style.display = 'block';
-    $('helpText').style.display = 'inline-block';
-  }
-  $('helpText').addEventListener('click', function(){
-    copyText(buildPlainText(), '설계서 내용을 복사했어요');
+    zone.appendChild(card);
   });
+}
 
-  $('btnPdf').addEventListener('click', function(){
-    var name = $('fName').value.trim();
-    var date = $('fDate').value.trim();
-    if(!date){ alert('오늘 날짜를 먼저 넣어 주세요.'); $('fDate').focus(); return; }
-    if(!name){ alert('이름을 먼저 넣어 주세요. 파일 이름에 들어갑니다.'); $('fName').focus(); return; }
-    saveState();
-    $('printHelp').classList.add('on');
-    $('helpGo').focus();
-  });
+function renderAll(){ renderFeatures(); renderMini(); renderMissions(); refresh(); }
 
-  $('helpCancel').addEventListener('click', function(){
-    $('printHelp').classList.remove('on');
-  });
+/* ============ 프롬프트 ============ */
+function v(id, fb){ var t = $(id).value.trim(); return t || (fb||''); }
 
-  $('helpGo').addEventListener('click', function(){
-    var name = $('fName').value.trim();
-    var date = $('fDate').value.trim();
+function buildPrompt(){
+  var L = [], crop = v('p2crop','작물');
+  L.push('초등학생이 즐기는 웹 게임을 만들어줘. 아래 내용대로 정확히 만들어줘.');
+  L.push('');
+  L.push('## 만들 것');
+  L.push('- 이름: ' + v('p2name','(정하지 않음)'));
+  L.push('- 종류: 애그테크(스마트농업) 체험 게임. 매일 미션이 주어지고, 미니게임으로 해결하는 방식이야.');
+  L.push('- 한 페이지 웹앱으로 만들어줘. 로그인, 회원가입, 데이터베이스, 서버는 만들지 마.');
+  L.push('- 화면 글자는 모두 한국어로 써줘.');
+  L.push('');
+  L.push('## 누가 하는 게임인가');
+  L.push('- 플레이어: ' + v('p2user','초등학생'));
+  L.push('- 키우는 작물: ' + crop);
+  L.push('- 돕고 싶은 문제: ' + v('p1problem','(정하지 않음)'));
+  L.push('- 그냥 두면: ' + v('p1why','(정하지 않음)'));
+  L.push('');
+  L.push('## 하루의 흐름 (가장 중요)');
+  L.push('1. 아침이 되면 화면 가운데에 [오늘의 미션] 카드가 뜬다. 오늘의 상황을 글과 그림으로 보여준다.');
+  L.push('2. 플레이어가 아래 버튼 중에서 알맞은 것을 하나 고른다.');
+  L.push('3. 맞는 버튼을 고르면 그 버튼에 연결된 미니게임이 시작된다.');
+  L.push('4. 미니게임에 성공하면 "오늘 농사 성공!" 이 뜨고 보상을 받는다.');
+  L.push('5. 틀린 버튼을 고르거나 미니게임에 실패하면: ' + v('p4fail','벌칙을 받는다'));
+  L.push('6. 결과를 보여준 뒤 자동으로 다음 날로 넘어간다.');
+  L.push('- 하루에 버튼은 한 번만 고를 수 있어. 고르고 나면 그날은 다시 못 고르게 막아줘.');
+  L.push('');
+  L.push('## 날짜별 미션');
+  if(state.miss.length && state.miss.some(function(m){ return m.sit || m.btn; })){
+    state.miss.forEach(function(m, i){
+      L.push((i+1) + '일째 — 상황: ' + (m.sit||'(정하지 않음)') +
+             ' / 정답 버튼: ' + (m.btn||'(정하지 않음)') +
+             ' / 성공하면: ' + (m.reward||'점수가 오른다'));
+    });
+    L.push('- ' + (state.miss.length) + '일째 이후로는 위 미션들을 순서를 섞어서 다시 내줘.');
+  } else {
+    L.push('(미션을 아직 정하지 않았어요)');
+  }
+  L.push('');
+  L.push('## 버튼과 미니게임');
+  if(state.features.length){
+    state.features.forEach(function(f, i){
+      var d = state.feat[f] || {}, m = MINI[d.mini] || {};
+      L.push((i+1) + '. [' + f + '] 버튼 → ' + (d.mini||'미니게임') + ' (' + (m.desc||'') + ')');
+      L.push('   · 조작: ' + (d.i || m.i || ''));
+      L.push('   · 성공 기준: ' + (d.p || m.p || ''));
+      L.push('   · 성공하면: ' + (d.o || m.o || ''));
+    });
+    L.push('- 미니게임은 화면 가운데 작은 창으로 띄우고, 끝나면 자동으로 닫아줘.');
+    L.push('- 미니게임마다 남은 시간과 지금 점수를 위에 크게 보여줘.');
+  } else {
+    L.push('(버튼을 아직 정하지 않았어요)');
+  }
+  L.push('');
+  L.push('## 숫자로 관리할 상태');
+  L.push('- 건강: 0~100, 시작 100');
+  L.push('- 성장: 0~100, 시작 0');
+  L.push('- 오늘이 며칠째인지, 미션 성공 횟수, 미션 실패 횟수');
+  L.push('');
+  L.push('## 게임이 끝나는 조건');
+  L.push('- 한 판의 길이: ' + v('p5len','7일'));
+  L.push('- 이기는 조건: ' + v('p5win','(정하지 않음)'));
+  L.push('- 지는 조건: ' + v('p5lose','(정하지 않음)'));
+  L.push('- 이기거나 지면 게임을 반드시 멈추고 결과 화면을 보여줘. 이겼을 때와 졌을 때 화면을 다르게 만들어줘.');
+  L.push('- 결과 화면에는 며칠 만에 끝났는지, 미션 성공 횟수, [다시 하기] 버튼을 넣어줘.');
+  L.push('- 게임이 끝난 뒤에는 다른 버튼이 눌리지 않게 막아줘.');
+  L.push('');
+  L.push('## 화면 구성');
+  L.push('- 맨 위: 게임 이름, 며칠째인지, 건강 막대와 성장 막대');
+  L.push('- 가운데: 오늘의 미션 카드. 그 아래에 ' + crop + ' 그림을 이모지로 크게 보여주고, 성장 점수에 따라 🌱 → 🌿 → 🌸 → 열매 로 바뀌게 해줘.');
+  L.push('- 맨 아래: 농사 버튼들을 한 줄로 크게 배치');
+  L.push('- 미니게임이 시작되면 가운데 창으로 덮어서 보여줘.');
+  L.push('');
+  L.push('## 디자인');
+  L.push('- 분위기: ' + v('p2mood','밝고 귀여운 느낌'));
+  L.push('- 초등학교 5~6학년이 쓰는 화면이야. 글씨와 버튼을 크게, 설명은 짧게 해줘.');
+  L.push('- 버튼마다 색을 다르게 해서 무슨 기능인지 바로 알 수 있게 해줘.');
+  var ex = $('p6extra').value.trim();
+  if(ex){ L.push(''); L.push('## 더 부탁할 것'); L.push('- ' + ex); }
+  L.push('');
+  L.push('## 하지 말 것');
+  L.push('- 위에 적지 않은 기능은 넣지 마.');
+  L.push('- 미니게임을 너무 어렵게 만들지 마. 초등학생이 두세 번 만에 성공할 정도로 해줘.');
+  L.push('- 게임이 끝나지 않고 계속 이어지게 만들지 마.');
+  return L.join('\n');
+}
 
-    $('printDoc').innerHTML = buildPrintDoc();
-    // 크롬·엣지는 문서 제목을 PDF 파일 이름으로 씁니다
-    document.title = safe(date) + '_' + safe(name);
-    $('printHelp').classList.remove('on');
+$('btnCopy').addEventListener('click', function(){ copyText(buildPrompt(), '프롬프트를 복사했어요'); $('copyMsg').textContent='복사했어요'; setTimeout(function(){ $('copyMsg').textContent=''; },2200); });
 
+function copyText(t, msg){
+  var ok = function(){ flash(msg); };
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(ok, fb); } else fb();
+  function fb(){
+    var ta = document.createElement('textarea');
+    ta.value = t; ta.style.position='fixed'; ta.style.left='-9999px';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); ok(); }catch(e){ flash('복사하지 못했어요'); }
+    document.body.removeChild(ta);
+  }
+}
+
+/* ============ 진행률 ============ */
+function progress(){
+  var reqs = ['fName','p1problem','p1why','p2name','p2crop','p2user','p2mood','p4fail','p5len','p5win','p5lose','p7good','p7fix','p7learn'];
+  var done = 0, total = reqs.length;
+  reqs.forEach(function(id){ if($(id).value.trim()) done++; });
+  total += 1; if(state.features.length >= 2) done++;
+  state.miss.forEach(function(m){ total++; if(m.sit && m.btn) done++; });
+  return { done:done, total:total };
+}
+function refresh(){
+  var p = progress(), pct = p.total ? Math.round(p.done/p.total*100) : 0;
+  $('gaugeFill').style.width = pct + '%';
+  $('gaugeTxt').textContent = p.done + ' / ' + p.total + ' 칸';
+  $('gaugeIcon').textContent = pct >= 100 ? '🌻' : pct >= 60 ? '🌿' : '🌱';
+  $('promptBox').textContent = buildPrompt();
+}
+function onChange(){ refresh(); clearTimeout(saveTimer); saveTimer = setTimeout(saveState, 700); }
+FIELDS.forEach(function(id){ $(id).addEventListener('input', onChange); });
+
+/* ============ 인쇄 ============ */
+function row(l,v2){ return '<tr><th>'+esc(l)+'</th><td>'+(v2?esc(v2):'<span class="blank">—</span>')+'</td></tr>'; }
+
+function buildPrintDoc(){
+  var mgRows = state.features.length
+    ? state.features.map(function(f,i){
+        var d = state.feat[f]||{}, m = MINI[d.mini]||{};
+        return '<tr><td class="n">'+(i+1)+'</td><td><b>'+esc(f)+'</b><br><span style="color:#3D8C7A">'+esc(d.mini||'')+'</span></td><td>'+
+          (d.i?esc(d.i):'<span class="blank">—</span>')+'</td><td>'+
+          (d.p?esc(d.p):'<span class="blank">—</span>')+'</td><td>'+
+          (d.o?esc(d.o):'<span class="blank">—</span>')+'</td></tr>';
+      }).join('')
+    : '<tr><td class="n">—</td><td colspan="4"><span class="blank">버튼을 정하지 않았습니다</span></td></tr>';
+
+  var msRows = state.miss.length
+    ? state.miss.map(function(m,i){
+        return '<tr><td class="n">'+(i+1)+'일</td><td>'+(m.sit?esc(m.sit):'<span class="blank">—</span>')+
+          '</td><td><b>'+(m.btn?esc(m.btn):'<span class="blank">—</span>')+'</b></td><td>'+
+          (m.reward?esc(m.reward):'<span class="blank">—</span>')+'</td></tr>';
+      }).join('')
+    : '<tr><td class="n">—</td><td colspan="3"><span class="blank">미션을 정하지 않았습니다</span></td></tr>';
+
+  return '' +
+  '<div style="font-family:\'Pretendard Variable\',Pretendard,-apple-system,\'Malgun Gothic\',sans-serif;color:#1E3A33;background:#fff;">' +
+    '<style>' +
+      '#printDoc h2{font-size:13pt;font-weight:800;color:#0E6B5C;margin:18px 0 8px;padding-bottom:5px;border-bottom:2px solid #0E6B5C;break-after:avoid;page-break-after:avoid;}' +
+      '#printDoc table{width:100%;border-collapse:collapse;font-size:10pt;break-inside:avoid;page-break-inside:avoid;}' +
+      '#printDoc th,#printDoc td{border:1px solid #9CC7B7;padding:6px 8px;text-align:left;vertical-align:top;line-height:1.5;}' +
+      '#printDoc th{background:#EDF8F3;font-weight:700;width:118px;color:#0E6B5C;}' +
+      '#printDoc .wide th{background:#DCEFE7;color:#0E6B5C;width:auto;text-align:center;}' +
+      '#printDoc .wide td.n{width:40px;text-align:center;font-weight:700;color:#0E6B5C;}' +
+      '#printDoc .blank{color:#9CAFA9;}' +
+      '#printDoc .pr{background:#F4FAF7;border:1px solid #9CC7B7;border-radius:8px;padding:11px 13px;font-size:8.5pt;line-height:1.65;white-space:pre-wrap;word-break:break-word;}' +
+      '#printDoc .memo{border:1px solid #9CC7B7;border-radius:7px;padding:8px 11px;font-size:10pt;min-height:38px;line-height:1.6;margin-bottom:7px;break-inside:avoid;}' +
+      '#printDoc .memo b{display:block;font-size:8.5pt;color:#5C7A72;margin-bottom:3px;}' +
+    '</style>' +
+    '<div style="background:#EDF8F3;border:2px solid #0E6B5C;border-left-width:9px;border-radius:10px;padding:14px 18px;">' +
+      '<div style="font-size:9pt;font-weight:700;color:#3D8C7A;">애그테크 · 미션형 스마트농업 게임</div>' +
+      '<div style="font-size:19pt;font-weight:800;margin:2px 0 8px;color:#0E6B5C;">AI 농부 도우미 게임 설계서</div>' +
+      '<div style="font-size:10.5pt;font-weight:600;">이름 ' + esc($('fName').value||'—') +
+        ' &nbsp;·&nbsp; ' + esc($('fClass').value||'학교·반 미기재') +
+        ' &nbsp;·&nbsp; ' + esc($('fDate').value||'—') + '</div>' +
+    '</div>' +
+
+    '<h2>1. 돕고 싶은 농사 문제</h2>' +
+    '<table>' + row('문제', $('p1problem').value) + row('그냥 두면', $('p1why').value) + '</table>' +
+
+    '<h2>2. 게임 기본 설정</h2>' +
+    '<table>' + row('게임 이름',$('p2name').value) + row('키우는 작물',$('p2crop').value) +
+      row('플레이어',$('p2user').value) + row('화면 분위기',$('p2mood').value) + '</table>' +
+
+    '<h2>3. 버튼과 미니게임</h2>' +
+    '<table class="wide"><tr><th>#</th><th>버튼 / 미니게임</th><th>입력 (조작)</th><th>처리 (성공 기준)</th><th>출력 (성공하면)</th></tr>' + mgRows + '</table>' +
+
+    '<h2>4. 하루하루 미션</h2>' +
+    '<table class="wide"><tr><th>날</th><th>오늘의 상황</th><th>정답 버튼</th><th>성공하면</th></tr>' + msRows + '</table>' +
+    '<table style="margin-top:7px">' + row('미션 실패하면', $('p4fail').value) + '</table>' +
+
+    '<h2>5. 게임이 끝나는 조건</h2>' +
+    '<table>' + row('한 판의 길이',$('p5len').value) + row('이기는 조건',$('p5win').value) +
+      row('지는 조건',$('p5lose').value) + '</table>' +
+
+    '<h2>6. AI에게 부탁한 말 (Lovable 프롬프트)</h2>' +
+    '<div class="pr">' + esc(buildPrompt()) + '</div>' +
+
+    '<h2>7. 만들고 나서</h2>' +
+    '<div class="memo"><b>가장 마음에 드는 점</b>' + (esc($('p7good').value)||'&nbsp;') + '</div>' +
+    '<div class="memo"><b>더 고치고 싶은 점</b>' + (esc($('p7fix').value)||'&nbsp;') + '</div>' +
+    '<div class="memo"><b>오늘 새롭게 알게 된 것</b>' + (esc($('p7learn').value)||'&nbsp;') + '</div>' +
+  '</div>';
+}
+
+function buildPlainText(){
+  var L = [];
+  L.push('AI 농부 도우미 게임 설계서');
+  L.push('이름: ' + ($('fName').value||'—') + ' / ' + ($('fClass').value||'—') + ' / ' + ($('fDate').value||'—'));
+  L.push('');
+  L.push('[1] 문제: ' + ($('p1problem').value||'—') + ' / 그냥 두면: ' + ($('p1why').value||'—'));
+  L.push('[2] 이름: ' + ($('p2name').value||'—') + ' / 작물: ' + ($('p2crop').value||'—') +
+         ' / 플레이어: ' + ($('p2user').value||'—') + ' / 분위기: ' + ($('p2mood').value||'—'));
+  L.push('');
+  L.push('[3] 버튼과 미니게임');
+  if(state.features.length){
+    state.features.forEach(function(f,i){ var d = state.feat[f]||{};
+      L.push((i+1)+'. '+f+' → '+(d.mini||'—')+' | 조작: '+(d.i||'—')+' | 성공: '+(d.p||'—')+' | 결과: '+(d.o||'—')); });
+  } else L.push('—');
+  L.push('');
+  L.push('[4] 하루하루 미션');
+  if(state.miss.length){
+    state.miss.forEach(function(m,i){ L.push((i+1)+'일째 — '+(m.sit||'—')+' → 정답 버튼: '+(m.btn||'—')+' → '+(m.reward||'—')); });
+  } else L.push('—');
+  L.push('실패하면: ' + ($('p4fail').value||'—'));
+  L.push('');
+  L.push('[5] 길이: ' + ($('p5len').value||'—') + ' / 이기면: ' + ($('p5win').value||'—') + ' / 지면: ' + ($('p5lose').value||'—'));
+  L.push('');
+  L.push('[6] Lovable 프롬프트');
+  L.push(buildPrompt());
+  L.push('');
+  L.push('[7] 마음에 드는 점: ' + ($('p7good').value||'—'));
+  L.push('    고치고 싶은 점: ' + ($('p7fix').value||'—'));
+  L.push('    새롭게 알게 된 것: ' + ($('p7learn').value||'—'));
+  return L.join('\n');
+}
+
+function safe(s){ return String(s).replace(/[\\\/:*?"<>|\s]+/g,'_').replace(/_+/g,'_').replace(/^_|_$/g,''); }
+
+var savedTitle = document.title;
+var inFrame = (function(){ try{ return window.self !== window.top; }catch(e){ return true; } })();
+if(inFrame){ $('frameWarn').style.display='block'; $('helpText').style.display='inline-block'; }
+$('helpText').addEventListener('click', function(){ copyText(buildPlainText(), '설계서 내용을 복사했어요'); });
+
+$('btnPdf').addEventListener('click', function(){
+  if(!$('fDate').value.trim()){ alert('오늘 날짜를 먼저 넣어 주세요.'); $('fDate').focus(); return; }
+  if(!$('fName').value.trim()){ alert('이름을 먼저 넣어 주세요. 파일 이름에 들어갑니다.'); $('fName').focus(); return; }
+  saveState(); $('printHelp').classList.add('on'); $('helpGo').focus();
+});
+$('helpCancel').addEventListener('click', function(){ $('printHelp').classList.remove('on'); });
+$('helpGo').addEventListener('click', function(){
+  $('printDoc').innerHTML = buildPrintDoc();
+  document.title = safe($('fDate').value.trim()) + '_' + safe($('fName').value.trim());
+  $('printHelp').classList.remove('on');
+  setTimeout(function(){
+    var ok = true;
+    try { window.print(); } catch(e){ ok = false; }
     setTimeout(function(){
-      var ok = true;
-      try { window.print(); } catch(e){ ok = false; }
-      setTimeout(function(){
-        document.title = savedTitle;
-        $('printDoc').innerHTML = '';
-        if(ok) flash('PDF 저장 창을 열었어요');
-        else {
-          alert('이 화면에서는 인쇄가 막혀 있습니다.\nHTML 파일을 내려받아 브라우저에서 열면 저장됩니다.');
-          $('printHelp').classList.add('on');
-        }
-      }, 800);
-    }, 60);
-  });
+      document.title = savedTitle; $('printDoc').innerHTML = '';
+      if(ok) flash('PDF 저장 창을 열었어요');
+      else { alert('이 화면에서는 인쇄가 막혀 있습니다.\nHTML 파일을 내려받아 브라우저에서 열면 저장됩니다.'); $('printHelp').classList.add('on'); }
+    }, 800);
+  }, 60);
+});
+window.addEventListener('afterprint', function(){ document.title = savedTitle; });
 
-  window.addEventListener('afterprint', function(){
-    document.title = savedTitle;
-  });
+$('btnReset').addEventListener('click', function(){
+  if(!confirm('쓴 내용을 모두 지웁니다. 계속할까요?')) return;
+  FIELDS.forEach(function(id){ if(id!=='fDate') $(id).value=''; });
+  state.features = []; state.feat = {}; state.miss = [];
+  document.querySelectorAll('.chip.on').forEach(function(c){ c.classList.remove('on'); });
+  renderAll(); onChange();
+});
 
-  /* ---------- 초기화 ---------- */
-  $('btnReset').addEventListener('click', function(){
-    if(!confirm('쓴 내용을 모두 지웁니다. 계속할까요?')) return;
-    FIELDS.forEach(function(id){ if(id !== 'fDate') $(id).value = ''; });
-    state.features = []; state.ipo = {};
-    document.querySelectorAll('.chip.on').forEach(function(c){ c.classList.remove('on'); });
-    renderFeatures(); renderIPO(); onChange();
-  });
-
-  /* ---------- 시작 ---------- */
-  (function initDate(){
-    var d = new Date();
-    var p = function(n){ return (n<10?'0':'') + n; };
-    $('fDate').value = d.getFullYear() + '-' + p(d.getMonth()+1) + '-' + p(d.getDate());
-  })();
-  renderFeatures(); renderIPO(); refresh(); loadState();
+(function(){ var d=new Date(), p=function(n){return (n<10?'0':'')+n;};
+  $('fDate').value = d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); })();
+renderAll(); loadState();
 })();
 </script>
 </body>
